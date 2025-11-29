@@ -2,7 +2,7 @@
 
 ## 👥 Integrantes
 👩 **Jennifer Castro**  
-👨 **Mariano Muriñigo**
+👨 **Mariano Murinigo**
 
 ---
 
@@ -101,3 +101,24 @@ http://localhost:3000
 | PUT    | /api/usuarios/:id | Actualizar usuario |
 | DELETE | /api/usuarios/:id | Eliminar usuario   |
 
+----------------------------------------------------------
+Próximas funcionalidades
+
+Autenticación con JWT
+
+Roles (master / cajero)
+
+Base de datos real con PostgreSQL
+
+Hashing de contraseñas (bcrypt)
+
+Validaciones con middleware
+
+Manejo de errores centralizado
+
+Tests unitarios y de integración
+
+Docker para despliegue
+
+Documentación completa con Swagger
+----------------------------------------------------------

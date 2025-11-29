@@ -1,16 +1,127 @@
-# React + Vite
+Sistema de Inventario y Control de Stock – Frontend (React)
+Integrantes
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+👩 Jennifer Castro
+👨 Mariano Murinigo
 
-Currently, two official plugins are available:
+Descripción del Proyecto
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Este frontend forma parte del Proyecto Final de la materia Metodología de Sistemas.
+Implementa la interfaz de usuario del Sistema de Inventario y Control de Stock, consumiendo la API desarrollada en Node.js.
 
-## React Compiler
+Permite gestionar:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Productos
 
-## Expanding the ESLint configuration
+Categorías
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Movimientos de stock
+
+Usuarios
+
+El objetivo es ofrecer una interfaz simple, ágil y accesible para negocios pequeños o minimercados.
+
+Tecnologías utilizadas
+
+React
+
+Vite
+
+React Hooks
+
+Fetch API / Axios (según uses)
+
+CSS Modules / Tailwind / estilos propios (adaptar según tu proyecto)
+
+Thunder Client / Postman para pruebas
+
+Estructura del proyecto
+
+src/
+├── components/
+│   ├── Navbar.jsx
+│   ├── ProductoForm.jsx
+│   ├── CategoriaForm.jsx
+│   ├── MovimientoForm.jsx
+│   └── ...
+├── pages/
+│   ├── Productos.jsx
+│   ├── Categorias.jsx
+│   ├── Movimientos.jsx
+│   ├── Usuarios.jsx
+│   └── Home.jsx
+├── services/
+│   ├── api.js
+│   └── productosService.js
+├── App.jsx
+├── main.jsx
+└── index.css
+
+
+Configuración del entorno
+
+Crear un archivo .env en la carpeta del frontend:
+VITE_API_URL=http://localhost:3000/api
+
+Y crear también .env.example:
+VITE_API_URL=
+Esto permite cambiar la URL de la API fácilmente, incluso en producción.
+
+Instalación y ejecución
+1)  Clonar el repositorio
+
+git clone https://github.com/MarianoMuri/api-control-stock
+cd frontend
+
+2) Instalar dependencias
+npm install
+
+3) Ejecutar el servidor de desarrollo
+npm run dev
+
+El frontend estará disponible en:
+
+  http://localhost:5173
+
+(La URL puede variar según Vite).
+
+Conexión con el backend
+
+El frontend se comunica con la API en:
+
+  http://localhost:3000/api
+
+La base se configura en:
+VITE_API_URL=http://localhost:3000/api
+
+
+Pantallas incluidas (o previstas)
+
+✔ Dashboard / Home
+✔ Listado de Productos
+✔ Alta / Edición / Eliminación de Productos
+✔ Gestión de Categorías
+✔ Registro de Movimientos de Stock
+✔ Registro y Gestión de Usuarios
+
+
+----------------------------------------------------------
+Próximas mejoras
+
+Autenticación y login de usuarios
+
+Roles (master / cajero)
+
+Integración completa con la base de datos real
+
+Dashboard con gráficas
+
+Notificaciones de stock crítico
+
+Mejoras de usabilidad (modales, loaders, errores globales)
+
+Testing en frontend
+
+Deploy en Vercel / Netlify
+
+----------------------------------------------------------
