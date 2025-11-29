@@ -1,4 +1,4 @@
-const { Sequelize } = require('sequelize');
+/* const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
 const sequelize = new Sequelize(
@@ -23,3 +23,6 @@ async function testConnection() {
 }
 
 module.exports = { sequelize, testConnection };
+/* Desactivado temporalmente para migración a postgres */
+
+export default null; 
