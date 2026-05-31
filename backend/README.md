@@ -29,6 +29,7 @@ La estructura está preparada para integrarse con **PostgreSQL**, **MySQL** o **
 * Node.js
 * Express
 * Sequelize (configurado pero desactivado para el prototipo)
+* PostgreSQL (integración planificada)
 * CORS
 * Dotenv
 * JWT (jsonwebtoken)
@@ -58,7 +59,8 @@ src/
 │   ├── movimientos.js
 │   ├── usuarios.js
 │   └── index.js
-├── middlewares/ (preparado para JWT y roles)
+├── middlewares/
+│   └── authMiddleware.js
 └── models/ (preparado para uso con BD real)
 ```
 
@@ -190,9 +192,30 @@ Respuesta esperada:
 
 ## 🔐 Mejoras implementadas recientemente
 
+## 🔑 Roles implementados
+
+### Master
+
+Puede acceder a:
+
+- Gestión de usuarios
+- Gestión de productos
+- Gestión de categorías
+- Gestión de movimientos
+- Rutas protegidas
+
+### Cajero
+
+Puede acceder únicamente a:
+
+- Funciones autorizadas por la aplicación
+- Operaciones asignadas por permisos
+
+Las rutas protegidas utilizan JWT y middleware de autorización por roles.
+
 ### Sprint: Autenticación JWT
 
-Se inició la implementación del sistema de autenticación para la API:
+Se implementó el sistema de autenticación para la API:
 
 * Creación de `authController.js`
 * Creación de `auth.js`
@@ -201,8 +224,11 @@ Se inició la implementación del sistema de autenticación para la API:
 * Configuración de `JWT_SECRET`
 * Definición de usuarios mock para pruebas
 * Endpoint `/api/auth/login`
-* Preparación para manejo de roles
-* Preparación para protección de rutas
+*  Implementación de roles master y cajero
+* Protección de rutas mediante JWT
+* Middleware de validación de token
+* Middleware de autorización por roles
+  
 
 ### Refactorización ES Modules
 
@@ -253,33 +279,50 @@ Archivos migrados:
 
 ✔ Arquitectura ES Modules
 
-✔ Inicio de implementación JWT
+✔ Autenticación JWT implementada
 
-✔ Inicio de implementación de Roles
+✔ Endpoint /api/auth/login operativo
 
-⚠ Middleware JWT pendiente
+✔ Generación de Token JWT
 
-⚠ Middleware de autorización pendiente
+✔ Usuarios mock para autenticación
+
+✔ Middleware de validación de token
+
+✔ Middleware de autorización por roles
+
+✔ Roles master y cajero
+
+✔ Protección de rutas mediante Bearer Token
+
+✔ Pruebas realizadas con Postman
 
 ⚠ Integración con PostgreSQL pendiente
 
----
+⚠ Persistencia real de usuarios pendiente
 
 ## 🚧 Próximas funcionalidades
 
 ### Seguridad
 
-* Finalizar autenticación con JWT
-* Middleware de validación de token
-* Middleware de autorización por roles
-* Hashing de contraseñas con bcrypt
+✔ Autenticación JWT implementada
+
+✔ Middleware de validación de token implementado
+
+✔ Middleware de autorización por roles implementado
+
+* Hashing de contraseñas con bcrypt real
 * Recuperación de contraseña
+* Refresh Tokens
+* Logout seguro
 
 ### Gestión de usuarios
 
-* Roles (master / cajero)
-* Restricción de acceso según permisos
+✔ Roles (master / cajero)
+
+* Restricción de acceso según permisos específicos
 * Auditoría de acciones de usuarios
+* Gestión de usuarios desde base de datos
 
 ### Base de datos
 
@@ -310,26 +353,3 @@ Archivos migrados:
 Trabajo Final Integrador de la materia Metodología de Sistemas.
 
 Objetivo: diseñar e implementar una solución de gestión de inventario para pequeños comercios utilizando una arquitectura cliente-servidor basada en Node.js, Express, React y PostgreSQL.
-
-
-----------------------------------------------------------
-Próximas funcionalidades
-
-Autenticación con JWT
-
-Roles (master / cajero)
-
-Base de datos real con PostgreSQL
-
-Hashing de contraseñas (bcrypt)
-
-Validaciones con middleware
-
-Manejo de errores centralizado
-
-Tests unitarios y de integración
-
-Docker para despliegue
-
-Documentación completa con Swagger
-----------------------------------------------------------
