@@ -1,72 +1,148 @@
 # Sistema de Inventario y Control de Stock
 
 ## 👥 Integrantes
-👩 **Jennifer Castro**  
+
+👩 **Jennifer Castro**
 👨 **Mariano Murinigo**
 
 ---
 
 ## 📌 Descripción del Proyecto
-API backend desarrollada como parte del Proyecto Final.  
+
+API backend desarrollada como parte del Proyecto Final.
+
 Implementa un sistema de gestión de inventario y control de stock con CRUD de:
 
-- Productos  
-- Categorías  
-- Movimientos de stock  
-- Usuarios  
+* Productos
+* Categorías
+* Movimientos de stock
+* Usuarios
 
-Actualmente el proyecto funciona con **datos mock** (arrays en memoria) para facilitar el prototipo inicial.  
+Actualmente el proyecto funciona con **datos mock** (arrays en memoria) para facilitar el prototipo inicial.
+
 La estructura está preparada para integrarse con **PostgreSQL**, **MySQL** o **MongoDB** en la siguiente etapa.
 
 ---
 
 ## 🚀 Tecnologías utilizadas
-- Node.js  
-- Express  
-- Sequelize (configurado pero desactivado para el prototipo)  
-- CORS  
-- Dotenv  
-- Thunder Client para pruebas locales  
+
+* Node.js
+* Express
+* Sequelize (configurado pero desactivado para el prototipo)
+* CORS
+* Dotenv
+* JWT (jsonwebtoken)
+* bcryptjs
+* Thunder Client para pruebas locales
 
 ---
 
 ## 📂 Estructura principal
+
+```text
 src/
 ├── app.js
 ├── server.js
 ├── config/
-│ └── database.js
+│   └── database.js
 ├── controllers/
-│ ├── categoriaController.js
-│ ├── productoController.js
-│ ├── movimientoController.js
-│ └── usuarioController.js
+│   ├── authController.js
+│   ├── categoriaController.js
+│   ├── productoController.js
+│   ├── movimientoController.js
+│   └── usuarioController.js
 ├── routes/
-│ ├── categorias.js
-│ ├── productos.js
-│ ├── movimientos.js
-│ ├── usuarios.js
-│ └── index.js
+│   ├── auth.js
+│   ├── categorias.js
+│   ├── productos.js
+│   ├── movimientos.js
+│   ├── usuarios.js
+│   └── index.js
+├── middlewares/ (preparado para JWT y roles)
 └── models/ (preparado para uso con BD real)
+```
 
 ---
 
 ## 🛠️ Instalación y ejecución
 
 ### 1️⃣ Clonar el repositorio
+
 ```bash
 git clone https://github.com/MarianoMuri/api-control-stock
 cd api-control-stock
-2️⃣ Instalar dependencias
+```
+
+### 2️⃣ Instalar dependencias
+
+```bash
 npm install
-3️⃣ Levantar el servidor
+```
+
+### 3️⃣ Configurar variables de entorno
+
+Crear un archivo `.env` en la raíz del backend:
+
+```env
+PORT=3000
+JWT_SECRET=REMOVED
+```
+
+### 4️⃣ Levantar el servidor
+
+```bash
 npm run dev
+```
 
 El servidor inicia en:
-http://localhost:3000
 
-📡 Endpoints disponibles (mock)
-▶️ Categorías — /api/categorias
+```text
+http://localhost:3000
+```
+
+---
+
+## 📡 Endpoints disponibles
+
+### ▶️ Autenticación — /api/auth
+
+| Método | Endpoint        | Descripción    |
+| ------ | --------------- | -------------- |
+| POST   | /api/auth/login | Iniciar sesión |
+
+#### Ejemplo de Login
+
+```http
+POST /api/auth/login
+```
+
+Body:
+
+```json
+{
+  "email": "admin@test.com",
+  "password": "123456"
+}
+```
+
+Respuesta esperada:
+
+```json
+{
+  "token": "jwt_token",
+  "usuario": {
+    "id": 1,
+    "nombre": "Administrador",
+    "email": "admin@test.com",
+    "rol": "master"
+  }
+}
+```
+
+---
+
+### ▶️ Categorías — /api/categorias
+
 | Método | Endpoint            | Descripción          |
 | ------ | ------------------- | -------------------- |
 | GET    | /api/categorias     | Listar categorías    |
@@ -75,7 +151,10 @@ http://localhost:3000
 | PUT    | /api/categorias/:id | Actualizar categoría |
 | DELETE | /api/categorias/:id | Eliminar categoría   |
 
-▶️ Productos — /api/productos
+---
+
+### ▶️ Productos — /api/productos
+
 | Método | Endpoint           | Descripción         |
 | ------ | ------------------ | ------------------- |
 | GET    | /api/productos     | Listar productos    |
@@ -84,7 +163,10 @@ http://localhost:3000
 | PUT    | /api/productos/:id | Actualizar producto |
 | DELETE | /api/productos/:id | Eliminar producto   |
 
-▶️ Movimientos — /api/movimientos
+---
+
+### ▶️ Movimientos — /api/movimientos
+
 | Método | Endpoint             | Descripción          |
 | ------ | -------------------- | -------------------- |
 | GET    | /api/movimientos     | Listar movimientos   |
@@ -92,7 +174,10 @@ http://localhost:3000
 | POST   | /api/movimientos     | Registrar movimiento |
 | DELETE | /api/movimientos/:id | Eliminar movimiento  |
 
-▶️ Usuarios — /api/usuarios
+---
+
+### ▶️ Usuarios — /api/usuarios
+
 | Método | Endpoint          | Descripción        |
 | ------ | ----------------- | ------------------ |
 | GET    | /api/usuarios     | Listar usuarios    |
@@ -100,6 +185,132 @@ http://localhost:3000
 | POST   | /api/usuarios     | Crear usuario      |
 | PUT    | /api/usuarios/:id | Actualizar usuario |
 | DELETE | /api/usuarios/:id | Eliminar usuario   |
+
+---
+
+## 🔐 Mejoras implementadas recientemente
+
+### Sprint: Autenticación JWT
+
+Se inició la implementación del sistema de autenticación para la API:
+
+* Creación de `authController.js`
+* Creación de `auth.js`
+* Instalación de `jsonwebtoken`
+* Instalación de `bcryptjs`
+* Configuración de `JWT_SECRET`
+* Definición de usuarios mock para pruebas
+* Endpoint `/api/auth/login`
+* Preparación para manejo de roles
+* Preparación para protección de rutas
+
+### Refactorización ES Modules
+
+Se migró progresivamente el proyecto desde CommonJS hacia ES Modules.
+
+Antes:
+
+```js
+const express = require("express");
+module.exports = router;
+```
+
+Ahora:
+
+```js
+import express from "express";
+export default router;
+```
+
+Archivos migrados:
+
+* app.js
+* server.js
+* routes/index.js
+* routes/auth.js
+* routes/categorias.js
+* routes/productos.js
+* routes/movimientos.js
+* routes/usuarios.js
+
+---
+
+## 📊 Estado actual del proyecto
+
+### Backend
+
+✔ API REST operativa
+
+✔ CRUD de Categorías
+
+✔ CRUD de Productos
+
+✔ CRUD de Movimientos
+
+✔ CRUD de Usuarios
+
+✔ Configuración mediante variables de entorno
+
+✔ Arquitectura ES Modules
+
+✔ Inicio de implementación JWT
+
+✔ Inicio de implementación de Roles
+
+⚠ Middleware JWT pendiente
+
+⚠ Middleware de autorización pendiente
+
+⚠ Integración con PostgreSQL pendiente
+
+---
+
+## 🚧 Próximas funcionalidades
+
+### Seguridad
+
+* Finalizar autenticación con JWT
+* Middleware de validación de token
+* Middleware de autorización por roles
+* Hashing de contraseñas con bcrypt
+* Recuperación de contraseña
+
+### Gestión de usuarios
+
+* Roles (master / cajero)
+* Restricción de acceso según permisos
+* Auditoría de acciones de usuarios
+
+### Base de datos
+
+* Base de datos real con PostgreSQL
+* Persistencia de usuarios
+* Persistencia de productos
+* Persistencia de categorías
+* Persistencia de movimientos
+
+### Calidad
+
+* Validaciones mediante middleware
+* Manejo centralizado de errores
+* Tests unitarios
+* Tests de integración
+
+### DevOps
+
+* Docker
+* Docker Compose
+* Swagger / OpenAPI
+* Deploy productivo
+
+---
+
+## 🎓 Proyecto Académico
+
+Trabajo Final Integrador de la materia Metodología de Sistemas.
+
+Objetivo: diseñar e implementar una solución de gestión de inventario para pequeños comercios utilizando una arquitectura cliente-servidor basada en Node.js, Express, React y PostgreSQL.
+
 
 ----------------------------------------------------------
 Próximas funcionalidades

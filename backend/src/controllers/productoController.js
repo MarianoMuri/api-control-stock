@@ -1,57 +1,53 @@
 let productos = [
   {
     id: 1,
-    nombre: 'Monitor 24"',
-    descripcion: "Monitor LED 24 pulgadas",
-    categoriaId: 1,
-    stockActual: 10,
-    stockMinimo: 2,
-    precio: 120000,
+    nombre: "Coca Cola 2L",
+    descripcion: "Gaseosa sabor cola",
+    precio: 2500,
+    stock: 20,
+    idCategoria: 1,
   },
   {
     id: 2,
-    nombre: "Teclado mecánico",
-    descripcion: "Teclado mecánico RGB",
-    categoriaId: 2,
-    stockActual: 5,
-    stockMinimo: 1,
-    precio: 80000,
+    nombre: "Yerba Mate 1kg",
+    descripcion: "Yerba mate tradicional",
+    precio: 3200,
+    stock: 15,
+    idCategoria: 2,
   },
 ];
 
-const listarProductos = (req, res) => {
+export const listarProductos = (req, res) => {
   res.json(productos);
 };
 
-const obtenerProducto = (req, res) => {
-  const id = parseInt(req.params.id);
-  const producto = productos.find((p) => p.id === id);
+export const obtenerProductoPorId = (req, res) => {
+  const id = Number(req.params.id);
+  const producto = productos.find((item) => item.id === id);
 
   if (!producto) {
-    return res.status(404).json({ error: "Producto no encontrado" });
+    return res.status(404).json({ mensaje: "Producto no encontrado" });
   }
 
   res.json(producto);
 };
 
-const crearProducto = (req, res) => {
-  const { nombre, descripcion, categoriaId, stockActual, stockMinimo, precio } =
-    req.body;
+export const crearProducto = (req, res) => {
+  const { nombre, descripcion, precio, stock, idCategoria } = req.body;
 
-  if (!nombre) {
-    return res.status(400).json({ error: "El nombre es obligatorio" });
+  if (!nombre || precio === undefined || stock === undefined) {
+    return res.status(400).json({
+      mensaje: "Nombre, precio y stock son obligatorios",
+    });
   }
 
-  const nuevoId = productos.length ? productos[productos.length - 1].id + 1 : 1;
-
   const nuevoProducto = {
-    id: nuevoId,
+    id: productos.length + 1,
     nombre,
     descripcion: descripcion || "",
-    categoriaId: categoriaId || null,
-    stockActual: stockActual ?? 0,
-    stockMinimo: stockMinimo ?? 0,
-    precio: precio ?? 0,
+    precio: Number(precio),
+    stock: Number(stock),
+    idCategoria: idCategoria || null,
   };
 
   productos.push(nuevoProducto);
@@ -59,47 +55,34 @@ const crearProducto = (req, res) => {
   res.status(201).json(nuevoProducto);
 };
 
-const actualizarProducto = (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = productos.findIndex((p) => p.id === id);
+export const actualizarProducto = (req, res) => {
+  const id = Number(req.params.id);
+  const { nombre, descripcion, precio, stock, idCategoria } = req.body;
 
-  if (index === -1) {
-    return res.status(404).json({ error: "Producto no encontrado" });
+  const producto = productos.find((item) => item.id === id);
+
+  if (!producto) {
+    return res.status(404).json({ mensaje: "Producto no encontrado" });
   }
 
-  const { nombre, descripcion, categoriaId, stockActual, stockMinimo, precio } =
-    req.body;
+  producto.nombre = nombre || producto.nombre;
+  producto.descripcion = descripcion || producto.descripcion;
+  producto.precio = precio !== undefined ? Number(precio) : producto.precio;
+  producto.stock = stock !== undefined ? Number(stock) : producto.stock;
+  producto.idCategoria = idCategoria || producto.idCategoria;
 
-  productos[index] = {
-    ...productos[index],
-    nombre: nombre ?? productos[index].nombre,
-    descripcion: descripcion ?? productos[index].descripcion,
-    categoriaId: categoriaId ?? productos[index].categoriaId,
-    stockActual: stockActual ?? productos[index].stockActual,
-    stockMinimo: stockMinimo ?? productos[index].stockMinimo,
-    precio: precio ?? productos[index].precio,
-  };
-
-  res.json(productos[index]);
+  res.json(producto);
 };
 
-const eliminarProducto = (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = productos.findIndex((p) => p.id === id);
+export const eliminarProducto = (req, res) => {
+  const id = Number(req.params.id);
+  const existeProducto = productos.some((item) => item.id === id);
 
-  if (index === -1) {
-    return res.status(404).json({ error: "Producto no encontrado" });
+  if (!existeProducto) {
+    return res.status(404).json({ mensaje: "Producto no encontrado" });
   }
 
-  productos.splice(index, 1);
+  productos = productos.filter((item) => item.id !== id);
 
   res.json({ mensaje: "Producto eliminado correctamente" });
-};
-
-module.exports = {
-  listarProductos,
-  obtenerProducto,
-  crearProducto,
-  actualizarProducto,
-  eliminarProducto,
 };

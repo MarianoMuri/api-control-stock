@@ -1,66 +1,74 @@
 let categorias = [
-  { id: 1, nombre: "Periféricos" },
-  { id: 2, nombre: "Monitores" },
-  { id: 3, nombre: "Notebooks" }
+  {
+    id: 1,
+    nombre: "Bebidas",
+    descripcion: "Productos líquidos para consumo",
+  },
+  {
+    id: 2,
+    nombre: "Almacén",
+    descripcion: "Productos secos y de almacén",
+  },
 ];
 
-const listarCategorias = (req, res) => {
+export const listarCategorias = (req, res) => {
   res.json(categorias);
 };
 
-const obtenerCategoria = (req, res) => {
-  const id = parseInt(req.params.id);
-  const categoria = categorias.find(c => c.id === id);
+export const obtenerCategoriaPorId = (req, res) => {
+  const id = Number(req.params.id);
+  const categoria = categorias.find((item) => item.id === id);
 
-  if (!categoria) return res.status(404).json({ error: "Categoría no encontrada" });
+  if (!categoria) {
+    return res.status(404).json({ mensaje: "Categoría no encontrada" });
+  }
 
   res.json(categoria);
 };
 
-const crearCategoria = (req, res) => {
-  const { nombre } = req.body;
+export const crearCategoria = (req, res) => {
+  const { nombre, descripcion } = req.body;
 
-  if (!nombre) return res.status(400).json({ error: "El nombre es obligatorio" });
+  if (!nombre) {
+    return res.status(400).json({ mensaje: "El nombre es obligatorio" });
+  }
 
-  const nuevoId = categorias.length ? categorias[categorias.length - 1].id + 1 : 1;
+  const nuevaCategoria = {
+    id: categorias.length + 1,
+    nombre,
+    descripcion: descripcion || "",
+  };
 
-  const nuevaCategoria = { id: nuevoId, nombre };
   categorias.push(nuevaCategoria);
 
   res.status(201).json(nuevaCategoria);
 };
 
-const actualizarCategoria = (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = categorias.findIndex(c => c.id === id);
+export const actualizarCategoria = (req, res) => {
+  const id = Number(req.params.id);
+  const { nombre, descripcion } = req.body;
 
-  if (index === -1) return res.status(404).json({ error: "Categoría no encontrada" });
+  const categoria = categorias.find((item) => item.id === id);
 
-  const { nombre } = req.body;
+  if (!categoria) {
+    return res.status(404).json({ mensaje: "Categoría no encontrada" });
+  }
 
-  categorias[index] = {
-    ...categorias[index],
-    nombre: nombre ?? categorias[index].nombre
-  };
+  categoria.nombre = nombre || categoria.nombre;
+  categoria.descripcion = descripcion || categoria.descripcion;
 
-  res.json(categorias[index]);
+  res.json(categoria);
 };
 
-const eliminarCategoria = (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = categorias.findIndex(c => c.id === id);
+export const eliminarCategoria = (req, res) => {
+  const id = Number(req.params.id);
+  const existeCategoria = categorias.some((item) => item.id === id);
 
-  if (index === -1) return res.status(404).json({ error: "Categoría no encontrada" });
+  if (!existeCategoria) {
+    return res.status(404).json({ mensaje: "Categoría no encontrada" });
+  }
 
-  categorias.splice(index, 1);
+  categorias = categorias.filter((item) => item.id !== id);
 
   res.json({ mensaje: "Categoría eliminada correctamente" });
-};
-
-module.exports = {
-  listarCategorias,
-  obtenerCategoria,
-  crearCategoria,
-  actualizarCategoria,
-  eliminarCategoria
 };

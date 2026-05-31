@@ -1,11 +1,17 @@
-const { Router } = require('express');
-const movimientoController = require('../controllers/movimientoController');
+import express from "express";
 
-const router = Router();
+import {
+    listarMovimientos,
+    obtenerMovimientoPorId,
+    crearMovimiento,
+    eliminarMovimiento,
+} from "../controllers/movimientoController.js";
 
-router.get('/', movimientoController.listarMovimientos);
-router.get('/:id', movimientoController.obtenerMovimiento);
-router.post('/', movimientoController.crearMovimiento);
-router.delete('/:id', movimientoController.eliminarMovimiento);
+const router = express.Router();
 
-module.exports = router;
+router.get("/", listarMovimientos);
+router.get("/:id", obtenerMovimientoPorId);
+router.post("/", crearMovimiento);
+router.delete("/:id", eliminarMovimiento);
+
+export default router;

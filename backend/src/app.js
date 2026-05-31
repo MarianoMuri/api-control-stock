@@ -1,21 +1,20 @@
-const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
 
-const routes = require('./routes');
+import routes from "./routes/index.js";
+
+dotenv.config();
 
 const app = express();
 
-// Middlewares
 app.use(cors());
 app.use(express.json());
 
-// Rutas base
-app.use('/api', routes);
+app.use("/api", routes);
 
-// Ruta raíz
-app.get('/', (req, res) => {
-    res.send('API de Inventario y Control de Stock');
+app.get("/", (req, res) => {
+    res.send("API de Inventario y Control de Stock");
 });
 
-module.exports = app;
+export default app;

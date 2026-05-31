@@ -2,84 +2,98 @@ let usuarios = [
   {
     id: 1,
     nombre: "Administrador",
-    email: "admin@controlstock.com",
-    rol: "admin"
+    email: "admin@test.com",
+    password: "123456",
+    rol: "master",
   },
   {
     id: 2,
-    nombre: "Operador Depósito",
-    email: "operador@controlstock.com",
-    rol: "operador"
-  }
+    nombre: "Cajero",
+    email: "cajero@test.com",
+    password: "123456",
+    rol: "cajero",
+  },
 ];
 
-const listarUsuarios = (req, res) => {
-  res.json(usuarios);
+export const listarUsuarios = (req, res) => {
+  const usuariosSinPassword = usuarios.map(({ password, ...usuario }) => usuario);
+  res.json(usuariosSinPassword);
 };
 
-const obtenerUsuario = (req, res) => {
-  const id = parseInt(req.params.id);
-  const usuario = usuarios.find(u => u.id === id);
+export const obtenerUsuarioPorId = (req, res) => {
+  const id = Number(req.params.id);
+  const usuario = usuarios.find((item) => item.id === id);
 
-  if (!usuario) return res.status(404).json({ error: "Usuario no encontrado" });
-
-  res.json(usuario);
-};
-
-const crearUsuario = (req, res) => {
-  const { nombre, email, rol } = req.body;
-
-  if (!nombre || !email) {
-    return res.status(400).json({ error: "nombre y email son obligatorios" });
+  if (!usuario) {
+    return res.status(404).json({ mensaje: "Usuario no encontrado" });
   }
 
-  const nuevoId = usuarios.length ? usuarios[usuarios.length - 1].id + 1 : 1;
+  const { password, ...usuarioSinPassword } = usuario;
+
+  res.json(usuarioSinPassword);
+};
+
+export const crearUsuario = (req, res) => {
+  const { nombre, email, password, rol } = req.body;
+
+  if (!nombre || !email || !password) {
+    return res.status(400).json({
+      mensaje: "Nombre, email y contraseña son obligatorios",
+    });
+  }
+
+  const existeEmail = usuarios.some((item) => item.email === email);
+
+  if (existeEmail) {
+    return res.status(400).json({
+      mensaje: "Ya existe un usuario con ese email",
+    });
+  }
 
   const nuevoUsuario = {
-    id: nuevoId,
+    id: usuarios.length + 1,
     nombre,
     email,
-    rol: rol || "operador"
+    password,
+    rol: rol || "cajero",
   };
 
   usuarios.push(nuevoUsuario);
 
-  res.status(201).json(nuevoUsuario);
+  const { password: _, ...usuarioSinPassword } = nuevoUsuario;
+
+  res.status(201).json(usuarioSinPassword);
 };
 
-const actualizarUsuario = (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = usuarios.findIndex(u => u.id === id);
+export const actualizarUsuario = (req, res) => {
+  const id = Number(req.params.id);
+  const { nombre, email, password, rol } = req.body;
 
-  if (index === -1) return res.status(404).json({ error: "Usuario no encontrado" });
+  const usuario = usuarios.find((item) => item.id === id);
 
-  const { nombre, email, rol } = req.body;
+  if (!usuario) {
+    return res.status(404).json({ mensaje: "Usuario no encontrado" });
+  }
 
-  usuarios[index] = {
-    ...usuarios[index],
-    nombre: nombre ?? usuarios[index].nombre,
-    email: email ?? usuarios[index].email,
-    rol: rol ?? usuarios[index].rol
-  };
+  usuario.nombre = nombre || usuario.nombre;
+  usuario.email = email || usuario.email;
+  usuario.password = password || usuario.password;
+  usuario.rol = rol || usuario.rol;
 
-  res.json(usuarios[index]);
+  const { password: _, ...usuarioSinPassword } = usuario;
+
+  res.json(usuarioSinPassword);
 };
 
-const eliminarUsuario = (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = usuarios.findIndex(u => u.id === id);
+export const eliminarUsuario = (req, res) => {
+  const id = Number(req.params.id);
+  const existeUsuario = usuarios.some((item) => item.id === id);
 
-  if (index === -1) return res.status(404).json({ error: "Usuario no encontrado" });
+  if (!existeUsuario) {
+    return res.status(404).json({ mensaje: "Usuario no encontrado" });
+  }
 
-  usuarios.splice(index, 1);
+  usuarios = usuarios.filter((item) => item.id !== id);
 
   res.json({ mensaje: "Usuario eliminado correctamente" });
-};
-
-module.exports = {
-  listarUsuarios,
-  obtenerUsuario,
-  crearUsuario,
-  actualizarUsuario,
-  eliminarUsuario
 };

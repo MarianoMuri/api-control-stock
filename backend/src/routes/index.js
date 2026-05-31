@@ -1,15 +1,17 @@
-const { Router } = require('express');
+import express from "express";
 
-const categoriaRoutes = require('./categorias');
-const productoRoutes = require('./productos');
-const movimientoRoutes = require('./movimientos');
-const usuarioRoutes = require('./usuarios'); // 👈 IMPORTANTE
+import categoriaRoutes from "./categorias.js";
+import productoRoutes from "./productos.js";
+import movimientoRoutes from "./movimientos.js";
+import usuarioRoutes from "./usuarios.js";
+import authRoutes from "./auth.js";
 
-const router = Router();
+const router = express.Router();
 
-router.use('/categorias', categoriaRoutes);
-router.use('/productos', productoRoutes);
-router.use('/movimientos', movimientoRoutes);
-router.use('/usuarios', usuarioRoutes); // 👈 QUEDA /api/usuarios
+router.use("/categorias", categoriaRoutes);
+router.use("/productos", productoRoutes);
+router.use("/movimientos", movimientoRoutes);
+router.use("/usuarios", usuarioRoutes);
+router.use("/auth", authRoutes);
 
-module.exports = router;
+export default router;

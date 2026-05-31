@@ -1,4 +1,5 @@
-import { NavLink, Routes, Route } from "react-router-dom";
+import { NavLink, Routes, Route, useNavigate } from "react-router-dom";
+
 import Dashboard from "./pages/Dashboard.jsx";
 import Productos from "./pages/Productos.jsx";
 import Categorias from "./pages/Categorias.jsx";
@@ -8,51 +9,124 @@ import CategoriaDetalle from "./pages/CategoriaDetalle.jsx";
 import ProductoDetalle from "./pages/ProductoDetalle.jsx";
 import MovimientoDetalle from "./pages/MovimientoDetalle.jsx";
 import UsuarioDetalle from "./pages/UsuarioDetalle.jsx";
+import Login from "./pages/Login.jsx";
+
+import PrivateRoute from "./components/PrivateRoute.jsx";
+import { logout, estaAutenticado } from "./services/authService.js";
 
 function App() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
-    <div className="app-layout">
-      <aside className="sidebar">
-        <div className="sidebar-header">
-          <h2>Control de Stock</h2>
-        </div>
-        <nav className="sidebar-nav">
-          <NavLink to="/" end className="nav-item">
-            Inicio
-          </NavLink>
-          <NavLink to="/productos" className="nav-item">
-            Productos
-          </NavLink>
-          <NavLink to="/categorias" className="nav-item">
-            Categorías
-          </NavLink>
-          <NavLink to="/movimientos" className="nav-item">
-            Movimientos
-          </NavLink>
-          <NavLink to="/usuarios" className="nav-item">
-            Usuarios
-          </NavLink>
-        </nav>
-      </aside>
-      <main className="main-content">
-        <header className="main-header">
-          <h1>Sistema de Inventario y Control de Stock</h1>
-        </header>
-        <section className="main-section">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/productos" element={<Productos />} />
-            <Route path="/productos/:id" element={<ProductoDetalle />} />
-            <Route path="/categorias" element={<Categorias />} />
-            <Route path="/categorias/:nombre" element={<CategoriaDetalle />} />
-            <Route path="/movimientos" element={<Movimientos />} />
-            <Route path="/movimientos/:id" element={<MovimientoDetalle />} />
-            <Route path="/usuarios" element={<Usuarios />} />
-            <Route path="/usuarios/:id" element={<UsuarioDetalle />} />
-          </Routes>
-        </section>
+    <>
+      <nav>
+        <h2>Control de Stock</h2>
+
+        {estaAutenticado() && (
+          <>
+            <NavLink to="/">Inicio</NavLink>
+            <NavLink to="/productos">Productos</NavLink>
+            <NavLink to="/categorias">Categorías</NavLink>
+            <NavLink to="/movimientos">Movimientos</NavLink>
+            <NavLink to="/usuarios">Usuarios</NavLink>
+
+            <button onClick={handleLogout}>Cerrar sesión</button>
+          </>
+        )}
+      </nav>
+
+      <main>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/productos"
+            element={
+              <PrivateRoute>
+                <Productos />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/productos/:id"
+            element={
+              <PrivateRoute>
+                <ProductoDetalle />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/categorias"
+            element={
+              <PrivateRoute>
+                <Categorias />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/categorias/:id"
+            element={
+              <PrivateRoute>
+                <CategoriaDetalle />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/movimientos"
+            element={
+              <PrivateRoute>
+                <Movimientos />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/movimientos/:id"
+            element={
+              <PrivateRoute>
+                <MovimientoDetalle />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/usuarios"
+            element={
+              <PrivateRoute>
+                <Usuarios />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/usuarios/:id"
+            element={
+              <PrivateRoute>
+                <UsuarioDetalle />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
       </main>
-    </div>
+    </>
   );
 }
 

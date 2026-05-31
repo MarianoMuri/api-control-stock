@@ -1,51 +1,51 @@
 let movimientos = [
   {
     id: 1,
-    productoId: 1,
-    tipo: "ENTRADA",
-    cantidad: 5,
-    fecha: "2024-11-01T10:00:00Z",
-    usuario: "admin"
+    tipo: "ingreso",
+    cantidad: 10,
+    idProducto: 1,
+    descripcion: "Ingreso inicial de stock",
+    fecha: new Date(),
   },
-  {
-    id: 2,
-    productoId: 2,
-    tipo: "SALIDA",
-    cantidad: 2,
-    fecha: "2024-11-02T15:30:00Z",
-    usuario: "admin"
-  }
 ];
 
-const listarMovimientos = (req, res) => {
+export const listarMovimientos = (req, res) => {
   res.json(movimientos);
 };
 
-const obtenerMovimiento = (req, res) => {
-  const id = parseInt(req.params.id);
-  const movimiento = movimientos.find(m => m.id === id);
+export const obtenerMovimientoPorId = (req, res) => {
+  const id = Number(req.params.id);
+  const movimiento = movimientos.find((item) => item.id === id);
 
-  if (!movimiento) return res.status(404).json({ error: "Movimiento no encontrado" });
+  if (!movimiento) {
+    return res.status(404).json({ mensaje: "Movimiento no encontrado" });
+  }
 
   res.json(movimiento);
 };
 
-const crearMovimiento = (req, res) => {
-  const { productoId, tipo, cantidad, fecha, usuario } = req.body;
+export const crearMovimiento = (req, res) => {
+  const { tipo, cantidad, idProducto, descripcion } = req.body;
 
-  if (!productoId || !tipo || !cantidad) {
-    return res.status(400).json({ error: "productoId, tipo y cantidad son obligatorios" });
+  if (!tipo || !cantidad || !idProducto) {
+    return res.status(400).json({
+      mensaje: "Tipo, cantidad e idProducto son obligatorios",
+    });
   }
 
-  const nuevoId = movimientos.length ? movimientos[movimientos.length - 1].id + 1 : 1;
+  if (tipo !== "ingreso" && tipo !== "egreso") {
+    return res.status(400).json({
+      mensaje: "El tipo debe ser ingreso o egreso",
+    });
+  }
 
   const nuevoMovimiento = {
-    id: nuevoId,
-    productoId,
+    id: movimientos.length + 1,
     tipo,
-    cantidad,
-    fecha: fecha || new Date().toISOString(),
-    usuario: usuario || "sistema"
+    cantidad: Number(cantidad),
+    idProducto: Number(idProducto),
+    descripcion: descripcion || "",
+    fecha: new Date(),
   };
 
   movimientos.push(nuevoMovimiento);
@@ -53,20 +53,15 @@ const crearMovimiento = (req, res) => {
   res.status(201).json(nuevoMovimiento);
 };
 
-const eliminarMovimiento = (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = movimientos.findIndex(m => m.id === id);
+export const eliminarMovimiento = (req, res) => {
+  const id = Number(req.params.id);
+  const existeMovimiento = movimientos.some((item) => item.id === id);
 
-  if (index === -1) return res.status(404).json({ error: "Movimiento no encontrado" });
+  if (!existeMovimiento) {
+    return res.status(404).json({ mensaje: "Movimiento no encontrado" });
+  }
 
-  movimientos.splice(index, 1);
+  movimientos = movimientos.filter((item) => item.id !== id);
 
   res.json({ mensaje: "Movimiento eliminado correctamente" });
-};
-
-module.exports = {
-  listarMovimientos,
-  obtenerMovimiento,
-  crearMovimiento,
-  eliminarMovimiento
 };
