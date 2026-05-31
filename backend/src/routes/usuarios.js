@@ -8,12 +8,17 @@ import {
     eliminarUsuario,
 } from "../controllers/usuarioController.js";
 
+import {
+    verificarToken,
+    autorizarRoles,
+} from "../middlewares/authMiddleware.js";
+
 const router = express.Router();
 
-router.get("/", listarUsuarios);
-router.get("/:id", obtenerUsuarioPorId);
-router.post("/", crearUsuario);
-router.put("/:id", actualizarUsuario);
-router.delete("/:id", eliminarUsuario);
+router.get("/", verificarToken, autorizarRoles("master"), listarUsuarios);
+router.get("/:id", verificarToken, autorizarRoles("master"), obtenerUsuarioPorId);
+router.post("/", verificarToken, autorizarRoles("master"), crearUsuario);
+router.put("/:id", verificarToken, autorizarRoles("master"), actualizarUsuario);
+router.delete("/:id", verificarToken, autorizarRoles("master"), eliminarUsuario);
 
 export default router;
