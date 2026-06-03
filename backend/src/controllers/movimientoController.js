@@ -51,11 +51,12 @@ export const obtenerMovimientoPorId = async (req, res) => {
 
 export const crearMovimiento = async (req, res) => {
   try {
-    const { tipo, cantidad, id_producto, id_usuario, fecha } = req.body;
+    const { tipo, cantidad, id_producto, fecha } = req.body;
+    const id_usuario = req.usuario.id;
 
-    if (!tipo || !cantidad || !id_producto || !id_usuario) {
+    if (!tipo || !cantidad || !id_producto) {
       return res.status(400).json({
-        mensaje: "Tipo, cantidad, id_producto e id_usuario son obligatorios",
+        mensaje: "Tipo, cantidad e id_producto son obligatorios",
       });
     }
 
@@ -95,7 +96,7 @@ export const crearMovimiento = async (req, res) => {
       tipo,
       cantidad: cantidadNumerica,
       id_producto: Number(id_producto),
-      id_usuario: Number(id_usuario),
+      id_usuario,
       fecha: fecha || new Date(),
     });
 
