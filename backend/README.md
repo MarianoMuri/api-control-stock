@@ -438,7 +438,7 @@ Las rutas protegidas utilizan:
 
 ### Backend
 
-✅ API REST operativa
+✅ API REST completamente operativa
 
 ✅ PostgreSQL integrado
 
@@ -472,39 +472,95 @@ Las rutas protegidas utilizan:
 
 ✅ Validación de stock insuficiente
 
-✅ Pruebas realizadas con Postman
+✅ Validación de cantidades positivas en movimientos
 
----
+✅ Validación de precios no negativos
 
-## 🚧 Próximas funcionalidades
+✅ Validación de stock no negativo
+
+✅ Validación de categorías existentes
+
+✅ Validación de categorías duplicadas
+
+✅ Validación de nombre obligatorio en categorías
+
+✅ Protección de endpoints mediante JWT
+
+✅ Asociación automática del usuario autenticado al registrar movimientos
+
+✅ Control de permisos por rol
+
+✅ Pruebas funcionales realizadas con Postman
+
+### Seguridad implementada
+
+✅ JSON Web Tokens (JWT)
+
+✅ Middleware verificarToken
+
+✅ Middleware autorizarRoles
+
+✅ Restricción de acceso según rol
+
+✅ Contraseñas almacenadas mediante bcrypt
+
+### Base de Datos
+
+✅ Relaciones Sequelize funcionando correctamente
+
+✅ Categoría → Productos
+
+✅ Producto → Movimientos
+
+✅ Usuario → Movimientos
+
+### Control de Inventario
+
+✅ Registro de ingresos de stock
+
+✅ Registro de egresos de stock
+
+✅ Actualización automática del stock
+
+✅ Prevención de stock negativo
+
+✅ Historial completo de movimientos
+
+
+## 🚧 Próximas mejoras
 
 ### Seguridad
 
 * Refresh Tokens
-* Logout seguro
-* Recuperación de contraseña
+* Gestión de sesiones
+* Recuperación y restablecimiento de contraseñas
 
-### Calidad
+### Calidad del software
 
-* Validaciones avanzadas
+* Validaciones avanzadas de datos
 * Manejo centralizado de errores
 * Tests unitarios
 * Tests de integración
+* Cobertura de código
 
 ### Documentación
 
-* Swagger / OpenAPI
+* Swagger
+* Documentación técnica de la API
+* Manual de instalación y despliegue
 
-### DevOps
+### Infraestructura
 
-* Docker
-* Docker Compose
-* Despliegue productivo
+* Contenerización con Docker
+* Docker Compose para entorno completo
+* Configuración para entornos de producción
 
 ---
 
-## 🎓 Proyecto Académico
+## 🎓 Proyecto Final Integrador
 
-Trabajo Final Integrador de la materia Metodología de Sistemas.
+Este repositorio contiene el backend del **Sistema de Inventario y Control de Stock**, desarrollado como **Proyecto Final Integrador de la Tecnicatura Universitaria en Programación (UTN)**.
 
-Objetivo: diseñar e implementar una solución de gestión de inventario para pequeños comercios utilizando una arquitectura cliente-servidor basada en Node.js, Express y PostgreSQL.
+La aplicación fue diseñada para permitir la administración de productos, categorías, usuarios y movimientos de stock mediante una API REST segura, utilizando autenticación basada en JWT y control de acceso por roles.
+
+El proyecto aplica conceptos de desarrollo backend, bases de datos relacionales, seguridad, arquitectura cliente-servidor y buenas prácticas de ingeniería de software, integrando tecnologías modernas del ecosistema JavaScript para construir una solución escalable, mantenible y orientada a entornos reales.
