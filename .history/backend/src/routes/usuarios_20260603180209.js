@@ -17,7 +17,7 @@ const router = express.Router();
 
 router.get("/", verificarToken, autorizarRoles("master"), listarUsuarios);
 router.get("/:id", verificarToken, autorizarRoles("master"), obtenerUsuarioPorId);
-router.post("/", verificarToken, autorizarRoles("master"), crearUsuario);
+router.post("/", crearUsuario);
 router.put("/:id", verificarToken, autorizarRoles("master"), actualizarUsuario);
 router.delete("/:id", verificarToken, autorizarRoles("master"), eliminarUsuario);
 
