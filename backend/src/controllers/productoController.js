@@ -49,7 +49,29 @@ export const crearProducto = async (req, res) => {
       });
     }
 
-    const categoria = await Categoria.findByPk(Number(id_categoria));
+    const precioNumerico = Number(precio);
+    const stockNumerico = Number(stock);
+    const idCategoriaNumerico = Number(id_categoria);
+
+    if (isNaN(precioNumerico) || precioNumerico < 0) {
+      return res.status(400).json({
+        mensaje: "El precio debe ser un número mayor o igual a 0",
+      });
+    }
+
+    if (isNaN(stockNumerico) || stockNumerico < 0) {
+      return res.status(400).json({
+        mensaje: "El stock debe ser un número mayor o igual a 0",
+      });
+    }
+
+    if (isNaN(idCategoriaNumerico)) {
+      return res.status(400).json({
+        mensaje: "id_categoria debe ser numérico",
+      });
+    }
+
+    const categoria = await Categoria.findByPk(idCategoriaNumerico);
 
     if (!categoria) {
       return res.status(404).json({ mensaje: "Categoría no encontrada" });
@@ -58,9 +80,9 @@ export const crearProducto = async (req, res) => {
     const nuevoProducto = await Producto.create({
       nombre,
       descripcion: descripcion || "",
-      precio: Number(precio),
-      stock: Number(stock),
-      id_categoria: Number(id_categoria),
+      precio: precioNumerico,
+      stock: stockNumerico,
+      id_categoria: idCategoriaNumerico,
     });
 
     res.status(201).json(nuevoProducto);
@@ -80,20 +102,58 @@ export const actualizarProducto = async (req, res) => {
       return res.status(404).json({ mensaje: "Producto no encontrado" });
     }
 
-    if (id_categoria) {
-      const categoria = await Categoria.findByPk(Number(id_categoria));
+    let precioActualizado = producto.precio;
+    let stockActualizado = producto.stock;
+    let idCategoriaActualizada = producto.id_categoria;
+
+    if (precio !== undefined) {
+      const precioNumerico = Number(precio);
+
+      if (isNaN(precioNumerico) || precioNumerico < 0) {
+        return res.status(400).json({
+          mensaje: "El precio debe ser un número mayor o igual a 0",
+        });
+      }
+
+      precioActualizado = precioNumerico;
+    }
+
+    if (stock !== undefined) {
+      const stockNumerico = Number(stock);
+
+      if (isNaN(stockNumerico) || stockNumerico < 0) {
+        return res.status(400).json({
+          mensaje: "El stock debe ser un número mayor o igual a 0",
+        });
+      }
+
+      stockActualizado = stockNumerico;
+    }
+
+    if (id_categoria !== undefined) {
+      const idCategoriaNumerico = Number(id_categoria);
+
+      if (isNaN(idCategoriaNumerico)) {
+        return res.status(400).json({
+          mensaje: "id_categoria debe ser numérico",
+        });
+      }
+
+      const categoria = await Categoria.findByPk(idCategoriaNumerico);
 
       if (!categoria) {
         return res.status(404).json({ mensaje: "Categoría no encontrada" });
       }
+
+      idCategoriaActualizada = idCategoriaNumerico;
     }
 
     await producto.update({
       nombre: nombre || producto.nombre,
       descripcion: descripcion || producto.descripcion,
-      precio: precio !== undefined ? Number(precio) : producto.precio,
-      stock: stock !== undefined ? Number(stock) : producto.stock,
-      id_categoria: id_categoria ? Number(id_categoria) : producto.id_categoria,
+      precio: precioActualizado,
+      stock: stockActualizado,
+      id_categoria: idCategoriaActualizada,
     });
 
     res.json(producto);

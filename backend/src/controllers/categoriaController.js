@@ -29,12 +29,20 @@ export const crearCategoria = async (req, res) => {
   try {
     const { nombre, descripcion } = req.body;
 
-    if (!nombre) {
+    if (!nombre || !nombre.trim()) {
       return res.status(400).json({ mensaje: "El nombre es obligatorio" });
     }
 
+    const categoriaExistente = await Categoria.findOne({
+      where: { nombre: nombre.trim() }
+    });
+
+    if (categoriaExistente) {
+      return res.status(400).json({ mensaje: "Ya existe una categoría con ese nombre" });
+    }
+
     const nuevaCategoria = await Categoria.create({
-      nombre,
+      nombre: nombre.trim(),
       descripcion: descripcion || "",
     });
 
@@ -55,9 +63,23 @@ export const actualizarCategoria = async (req, res) => {
       return res.status(404).json({ mensaje: "Categoría no encontrada" });
     }
 
+    if (nombre !== undefined && !nombre.trim()) {
+      return res.status(400).json({ mensaje: "El nombre no puede estar vacío" });
+    }
+
+    if (nombre !== undefined) {
+      const categoriaExistente = await Categoria.findOne({
+        where: { nombre: nombre.trim() }
+      });
+
+      if (categoriaExistente && categoriaExistente.id !== categoria.id) {
+        return res.status(400).json({ mensaje: "Ya existe una categoría con ese nombre" });
+      }
+    }
+
     await categoria.update({
-      nombre: nombre || categoria.nombre,
-      descripcion: descripcion || categoria.descripcion,
+      nombre: nombre !== undefined ? nombre.trim() : categoria.nombre,
+      descripcion: descripcion !== undefined ? descripcion : categoria.descripcion,
     });
 
     res.json(categoria);

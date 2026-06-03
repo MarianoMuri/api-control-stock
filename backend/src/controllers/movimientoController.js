@@ -77,8 +77,13 @@ export const crearMovimiento = async (req, res) => {
     if (!usuario) {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
-
     const cantidadNumerica = Number(cantidad);
+
+    if (isNaN(cantidadNumerica) || cantidadNumerica <= 0) {
+      return res.status(400).json({
+        mensaje: "La cantidad debe ser un número mayor a 0",
+      });
+    }
 
     if (tipo === "egreso" && producto.stock < cantidadNumerica) {
       return res.status(400).json({ mensaje: "Stock insuficiente" });
