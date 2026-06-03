@@ -1,88 +1,120 @@
-let productos = [
-  {
-    id: 1,
-    nombre: "Coca Cola 2L",
-    descripcion: "Gaseosa sabor cola",
-    precio: 2500,
-    stock: 20,
-    idCategoria: 1,
-  },
-  {
-    id: 2,
-    nombre: "Yerba Mate 1kg",
-    descripcion: "Yerba mate tradicional",
-    precio: 3200,
-    stock: 15,
-    idCategoria: 2,
-  },
-];
+import { Producto, Categoria } from '../models/index.js';
 
-export const listarProductos = (req, res) => {
-  res.json(productos);
-};
-
-export const obtenerProductoPorId = (req, res) => {
-  const id = Number(req.params.id);
-  const producto = productos.find((item) => item.id === id);
-
-  if (!producto) {
-    return res.status(404).json({ mensaje: "Producto no encontrado" });
-  }
-
-  res.json(producto);
-};
-
-export const crearProducto = (req, res) => {
-  const { nombre, descripcion, precio, stock, idCategoria } = req.body;
-
-  if (!nombre || precio === undefined || stock === undefined) {
-    return res.status(400).json({
-      mensaje: "Nombre, precio y stock son obligatorios",
+export const listarProductos = async (req, res) => {
+  try {
+    const productos = await Producto.findAll({
+      include: [
+        {
+          model: Categoria,
+          as: "categoria"
+        }
+      ]
     });
+
+    res.json(productos);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al listar productos" });
   }
-
-  const nuevoProducto = {
-    id: productos.length + 1,
-    nombre,
-    descripcion: descripcion || "",
-    precio: Number(precio),
-    stock: Number(stock),
-    idCategoria: idCategoria || null,
-  };
-
-  productos.push(nuevoProducto);
-
-  res.status(201).json(nuevoProducto);
 };
 
-export const actualizarProducto = (req, res) => {
-  const id = Number(req.params.id);
-  const { nombre, descripcion, precio, stock, idCategoria } = req.body;
+export const obtenerProductoPorId = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const producto = await Producto.findByPk(id, {
+      include: [
+        {
+          model: Categoria,
+          as: "categoria"
+        }
+      ]
+    });
 
-  const producto = productos.find((item) => item.id === id);
+    if (!producto) {
+      return res.status(404).json({ mensaje: "Producto no encontrado" });
+    }
 
-  if (!producto) {
-    return res.status(404).json({ mensaje: "Producto no encontrado" });
+    res.json(producto);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al obtener producto" });
   }
-
-  producto.nombre = nombre || producto.nombre;
-  producto.descripcion = descripcion || producto.descripcion;
-  producto.precio = precio !== undefined ? Number(precio) : producto.precio;
-  producto.stock = stock !== undefined ? Number(stock) : producto.stock;
-  producto.idCategoria = idCategoria || producto.idCategoria;
-
-  res.json(producto);
 };
 
-export const eliminarProducto = (req, res) => {
-  const id = Number(req.params.id);
-  const existeProducto = productos.some((item) => item.id === id);
+export const crearProducto = async (req, res) => {
+  try {
+    const { nombre, descripcion, precio, stock, id_categoria } = req.body;
 
-  if (!existeProducto) {
-    return res.status(404).json({ mensaje: "Producto no encontrado" });
+    if (!nombre || precio === undefined || stock === undefined || !id_categoria) {
+      return res.status(400).json({
+        mensaje: "Nombre, precio, stock e id_categoria son obligatorios",
+      });
+    }
+
+    const categoria = await Categoria.findByPk(Number(id_categoria));
+
+    if (!categoria) {
+      return res.status(404).json({ mensaje: "Categoría no encontrada" });
+    }
+
+    const nuevoProducto = await Producto.create({
+      nombre,
+      descripcion: descripcion || "",
+      precio: Number(precio),
+      stock: Number(stock),
+      id_categoria: Number(id_categoria),
+    });
+
+    res.status(201).json(nuevoProducto);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al crear producto" });
   }
+};
 
-  productos = productos.filter((item) => item.id !== id);
+export const actualizarProducto = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { nombre, descripcion, precio, stock, id_categoria } = req.body;
 
-  res.json({ mensaje: "Producto eliminado correctamente" });
+    const producto = await Producto.findByPk(id);
+
+    if (!producto) {
+      return res.status(404).json({ mensaje: "Producto no encontrado" });
+    }
+
+    if (id_categoria) {
+      const categoria = await Categoria.findByPk(Number(id_categoria));
+
+      if (!categoria) {
+        return res.status(404).json({ mensaje: "Categoría no encontrada" });
+      }
+    }
+
+    await producto.update({
+      nombre: nombre || producto.nombre,
+      descripcion: descripcion || producto.descripcion,
+      precio: precio !== undefined ? Number(precio) : producto.precio,
+      stock: stock !== undefined ? Number(stock) : producto.stock,
+      id_categoria: id_categoria ? Number(id_categoria) : producto.id_categoria,
+    });
+
+    res.json(producto);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al actualizar producto" });
+  }
+};
+
+export const eliminarProducto = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const producto = await Producto.findByPk(id);
+
+    if (!producto) {
+      return res.status(404).json({ mensaje: "Producto no encontrado" });
+    }
+
+    await producto.destroy();
+
+    res.json({ mensaje: "Producto eliminado correctamente" });
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al eliminar producto" });
+  }
 };

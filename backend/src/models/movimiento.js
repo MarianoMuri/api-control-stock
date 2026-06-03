@@ -1,5 +1,5 @@
-const { Model, DataTypes } = require('sequelize');
-const { sequelize } = require('../config/database');
+import { Model, DataTypes } from 'sequelize';
+import { sequelize } from '../config/database.js';
 
 class Movimiento extends Model { }
 
@@ -11,6 +11,10 @@ Movimiento.init(
             autoIncrement: true
         },
         id_producto: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        id_usuario: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
@@ -38,4 +42,4 @@ Movimiento.init(
     }
 );
 
-module.exports = Movimiento;
+export default Movimiento;
