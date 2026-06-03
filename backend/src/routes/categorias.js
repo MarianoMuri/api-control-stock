@@ -8,12 +8,17 @@ import {
     eliminarCategoria,
 } from "../controllers/categoriaController.js";
 
+import {
+    verificarToken,
+    autorizarRoles,
+} from "../middlewares/authMiddleware.js";
+
 const router = express.Router();
 
-router.get("/", listarCategorias);
-router.get("/:id", obtenerCategoriaPorId);
-router.post("/", crearCategoria);
-router.put("/:id", actualizarCategoria);
-router.delete("/:id", eliminarCategoria);
+router.get("/", verificarToken, autorizarRoles("master", "cajero"), listarCategorias);
+router.get("/:id", verificarToken, autorizarRoles("master", "cajero"), obtenerCategoriaPorId);
+router.post("/", verificarToken, autorizarRoles("master"), crearCategoria);
+router.put("/:id", verificarToken, autorizarRoles("master"), actualizarCategoria);
+router.delete("/:id", verificarToken, autorizarRoles("master"), eliminarCategoria);
 
 export default router;
