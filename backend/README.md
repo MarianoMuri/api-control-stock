@@ -1,40 +1,56 @@
-# Sistema de Inventario y Control de Stock
+# Sistema de Inventario y Control de Stock - Backend
 
 ## 👥 Integrantes
 
-👩 **Jennifer Castro**
-👨 **Mariano Murinigo**
+👩 Jennifer Castro
+
+👨 Mariano Murinigo
 
 ---
 
 ## 📌 Descripción del Proyecto
 
-API backend desarrollada como parte del Proyecto Final.
+API REST desarrollada como Proyecto Final Integrador.
 
-Implementa un sistema de gestión de inventario y control de stock con CRUD de:
+El sistema permite gestionar el inventario y control de stock de un comercio mediante la administración de:
 
-* Productos
 * Categorías
+* Productos
 * Movimientos de stock
 * Usuarios
 
-Actualmente el proyecto funciona con **datos mock** (arrays en memoria) para facilitar el prototipo inicial.
+La aplicación fue desarrollada utilizando Node.js, Express, Sequelize y PostgreSQL, implementando autenticación mediante JWT y autorización basada en roles.
 
-La estructura está preparada para integrarse con **PostgreSQL**, **MySQL** o **MongoDB** en la siguiente etapa.
+Actualmente cuenta con persistencia real de datos en PostgreSQL y relaciones entre entidades utilizando Sequelize ORM.
 
 ---
 
 ## 🚀 Tecnologías utilizadas
 
+### Backend
+
 * Node.js
 * Express
-* Sequelize (configurado pero desactivado para el prototipo)
-* PostgreSQL (integración planificada)
-* CORS
-* Dotenv
+* Sequelize
+* PostgreSQL
 * JWT (jsonwebtoken)
 * bcryptjs
-* Thunder Client para pruebas locales
+* dotenv
+* cors
+
+### Base de Datos
+
+* PostgreSQL
+
+### Testing
+
+* Postman
+
+### Seguridad
+
+* JSON Web Tokens (JWT)
+* Middleware de autenticación
+* Middleware de autorización por roles
 
 ---
 
@@ -52,6 +68,14 @@ src/
 │   ├── productoController.js
 │   ├── movimientoController.js
 │   └── usuarioController.js
+├── middlewares/
+│   └── authMiddleware.js
+├── models/
+│   ├── categoria.js
+│   ├── producto.js
+│   ├── movimiento.js
+│   ├── usuario.js
+│   └── index.js
 ├── routes/
 │   ├── auth.js
 │   ├── categorias.js
@@ -59,60 +83,244 @@ src/
 │   ├── movimientos.js
 │   ├── usuarios.js
 │   └── index.js
-├── middlewares/
-│   └── authMiddleware.js
-└── models/ (preparado para uso con BD real)
+└── config/
+    └── database.js
 ```
 
 ---
 
 ## 🛠️ Instalación y ejecución
 
-### 1️⃣ Clonar el repositorio
+### 1. Clonar repositorio
 
 ```bash
 git clone https://github.com/MarianoMuri/api-control-stock
-cd api-control-stock
+cd api-control-stock/backend
 ```
 
-### 2️⃣ Instalar dependencias
+### 2. Instalar dependencias
 
 ```bash
 npm install
 ```
 
-### 3️⃣ Configurar variables de entorno
+### 3. Crear base de datos
 
-Crear un archivo `.env` en la raíz del backend:
+```sql
+CREATE DATABASE control_stock;
+```
+
+### 4. Configurar variables de entorno
+
+Crear archivo `.env`
 
 ```env
 PORT=3000
+
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=control_stock
+DB_USER=tu_usuario_postgres
+DB_PASSWORD=tu_password
+
 JWT_SECRET=clave_super_secreta_control_stock
 ```
 
-### 4️⃣ Levantar el servidor
+### 5. Ejecutar servidor
 
 ```bash
 npm run dev
 ```
 
-El servidor inicia en:
+Servidor disponible en:
 
 ```text
 http://localhost:3000
 ```
 
+Al iniciar:
+
+* Sequelize se conecta a PostgreSQL.
+* Se sincronizan automáticamente las tablas.
+* Se crean las relaciones entre modelos.
+* Se habilitan las rutas protegidas mediante JWT.
+
 ---
 
-## 📡 Endpoints disponibles
+## 🗄️ Modelo de Datos
 
-### ▶️ Autenticación — /api/auth
+### Categorías
 
-| Método | Endpoint        | Descripción    |
-| ------ | --------------- | -------------- |
-| POST   | /api/auth/login | Iniciar sesión |
+```json
+{
+  "id": 1,
+  "nombre": "Bebidas",
+  "descripcion": "Productos líquidos para consumo"
+}
+```
 
-#### Ejemplo de Login
+### Productos
+
+```json
+{
+  "id": 1,
+  "nombre": "Coca Cola 2L",
+  "descripcion": "Gaseosa sabor cola",
+  "precio": 2500,
+  "stock": 20,
+  "id_categoria": 1
+}
+```
+
+### Usuarios
+
+```json
+{
+  "id": 1,
+  "nombre": "Administrador",
+  "email": "admin@test.com",
+  "rol": "master"
+}
+```
+
+### Movimientos
+
+```json
+{
+  "id": 1,
+  "tipo": "ingreso",
+  "cantidad": 5,
+  "id_producto": 1,
+  "id_usuario": 1,
+  "fecha": "2026-06-03"
+}
+```
+---
+
+## 🔗 Relaciones implementadas
+
+### Categorías ↔ Productos
+
+Una categoría puede tener muchos productos.
+
+```text
+Categoria 1 ------ N Producto
+```
+
+Un producto pertenece a una única categoría.
+
+---
+
+### Productos ↔ Movimientos
+
+Un producto puede registrar múltiples movimientos de stock.
+
+```text
+Producto 1 ------ N Movimiento
+```
+
+Cada movimiento pertenece a un único producto.
+
+---
+
+### Usuarios ↔ Movimientos
+
+Un usuario puede registrar múltiples movimientos.
+
+```text
+Usuario 1 ------ N Movimiento
+```
+
+Cada movimiento queda asociado al usuario que lo realizó.
+
+---
+
+## 📦 Control automático de stock
+
+El sistema actualiza automáticamente el stock de un producto al registrar movimientos.
+
+### Ingreso de stock
+
+Solicitud:
+
+```json
+{
+  "tipo": "ingreso",
+  "cantidad": 5,
+  "id_producto": 1,
+  "id_usuario": 1
+}
+```
+
+Resultado:
+
+```text
+Stock actual: 20
+Ingreso: +5
+Nuevo stock: 25
+```
+
+---
+
+### Egreso de stock
+
+Solicitud:
+
+```json
+{
+  "tipo": "egreso",
+  "cantidad": 3,
+  "id_producto": 1,
+  "id_usuario": 1
+}
+```
+
+Resultado:
+
+```text
+Stock actual: 25
+Egreso: -3
+Nuevo stock: 22
+```
+
+---
+
+### Validación de stock insuficiente
+
+Si se intenta retirar más stock del disponible:
+
+```json
+{
+  "tipo": "egreso",
+  "cantidad": 100,
+  "id_producto": 1,
+  "id_usuario": 1
+}
+```
+
+Respuesta:
+
+```json
+{
+  "mensaje": "Stock insuficiente"
+}
+```
+
+Código HTTP:
+
+```text
+400 Bad Request
+```
+
+---
+
+## 🔐 Autenticación JWT
+
+La API utiliza JSON Web Tokens para proteger rutas sensibles.
+
+### Login
+
+Endpoint:
 
 ```http
 POST /api/auth/login
@@ -127,7 +335,7 @@ Body:
 }
 ```
 
-Respuesta esperada:
+Respuesta:
 
 ```json
 {
@@ -143,121 +351,86 @@ Respuesta esperada:
 
 ---
 
-### ▶️ Categorías — /api/categorias
-
-| Método | Endpoint            | Descripción          |
-| ------ | ------------------- | -------------------- |
-| GET    | /api/categorias     | Listar categorías    |
-| GET    | /api/categorias/:id | Obtener categoría    |
-| POST   | /api/categorias     | Crear categoría      |
-| PUT    | /api/categorias/:id | Actualizar categoría |
-| DELETE | /api/categorias/:id | Eliminar categoría   |
-
----
-
-### ▶️ Productos — /api/productos
-
-| Método | Endpoint           | Descripción         |
-| ------ | ------------------ | ------------------- |
-| GET    | /api/productos     | Listar productos    |
-| GET    | /api/productos/:id | Obtener producto    |
-| POST   | /api/productos     | Crear producto      |
-| PUT    | /api/productos/:id | Actualizar producto |
-| DELETE | /api/productos/:id | Eliminar producto   |
-
----
-
-### ▶️ Movimientos — /api/movimientos
-
-| Método | Endpoint             | Descripción          |
-| ------ | -------------------- | -------------------- |
-| GET    | /api/movimientos     | Listar movimientos   |
-| GET    | /api/movimientos/:id | Obtener movimiento   |
-| POST   | /api/movimientos     | Registrar movimiento |
-| DELETE | /api/movimientos/:id | Eliminar movimiento  |
-
----
-
-### ▶️ Usuarios — /api/usuarios
-
-| Método | Endpoint          | Descripción        |
-| ------ | ----------------- | ------------------ |
-| GET    | /api/usuarios     | Listar usuarios    |
-| GET    | /api/usuarios/:id | Obtener usuario    |
-| POST   | /api/usuarios     | Crear usuario      |
-| PUT    | /api/usuarios/:id | Actualizar usuario |
-| DELETE | /api/usuarios/:id | Eliminar usuario   |
-
----
-
-## 🔐 Mejoras implementadas recientemente
-
-## 🔑 Roles implementados
+## 👤 Roles implementados
 
 ### Master
 
-Puede acceder a:
+Permisos:
 
-- Gestión de usuarios
-- Gestión de productos
-- Gestión de categorías
-- Gestión de movimientos
-- Rutas protegidas
+* Gestión de usuarios
+* Gestión de categorías
+* Gestión de productos
+* Gestión de movimientos
+* Acceso a rutas protegidas
 
 ### Cajero
 
-Puede acceder únicamente a:
+Permisos:
 
-- Funciones autorizadas por la aplicación
-- Operaciones asignadas por permisos
+* Acceso a funcionalidades autorizadas por la aplicación
+* Operaciones definidas por el sistema
 
-Las rutas protegidas utilizan JWT y middleware de autorización por roles.
+Las rutas protegidas utilizan:
 
-### Sprint: Autenticación JWT
-
-Se implementó el sistema de autenticación para la API:
-
-* Creación de `authController.js`
-* Creación de `auth.js`
-* Instalación de `jsonwebtoken`
-* Instalación de `bcryptjs`
-* Configuración de `JWT_SECRET`
-* Definición de usuarios mock para pruebas
-* Endpoint `/api/auth/login`
-*  Implementación de roles master y cajero
-* Protección de rutas mediante JWT
-* Middleware de validación de token
+* Middleware de autenticación JWT
 * Middleware de autorización por roles
-  
 
-### Refactorización ES Modules
+---
 
-Se migró progresivamente el proyecto desde CommonJS hacia ES Modules.
+## 📡 Endpoints disponibles
 
-Antes:
+### Autenticación
 
-```js
-const express = require("express");
-module.exports = router;
-```
+| Método | Endpoint        |
+| ------ | --------------- |
+| POST   | /api/auth/login |
 
-Ahora:
+---
 
-```js
-import express from "express";
-export default router;
-```
+### Categorías
 
-Archivos migrados:
+| Método | Endpoint            |
+| ------ | ------------------- |
+| GET    | /api/categorias     |
+| GET    | /api/categorias/:id |
+| POST   | /api/categorias     |
+| PUT    | /api/categorias/:id |
+| DELETE | /api/categorias/:id |
 
-* app.js
-* server.js
-* routes/index.js
-* routes/auth.js
-* routes/categorias.js
-* routes/productos.js
-* routes/movimientos.js
-* routes/usuarios.js
+---
+
+### Productos
+
+| Método | Endpoint           |
+| ------ | ------------------ |
+| GET    | /api/productos     |
+| GET    | /api/productos/:id |
+| POST   | /api/productos     |
+| PUT    | /api/productos/:id |
+| DELETE | /api/productos/:id |
+
+---
+
+### Movimientos
+
+| Método | Endpoint             |
+| ------ | -------------------- |
+| GET    | /api/movimientos     |
+| GET    | /api/movimientos/:id |
+| POST   | /api/movimientos     |
+| DELETE | /api/movimientos/:id |
+
+---
+
+### Usuarios
+
+| Método | Endpoint          |
+| ------ | ----------------- |
+| GET    | /api/usuarios     |
+| GET    | /api/usuarios/:id |
+| POST   | /api/usuarios     |
+| PUT    | /api/usuarios/:id |
+| DELETE | /api/usuarios/:id |
 
 ---
 
@@ -265,86 +438,68 @@ Archivos migrados:
 
 ### Backend
 
-✔ API REST operativa
+✅ API REST operativa
 
-✔ CRUD de Categorías
+✅ PostgreSQL integrado
 
-✔ CRUD de Productos
+✅ Sequelize configurado
 
-✔ CRUD de Movimientos
+✅ Modelos implementados
 
-✔ CRUD de Usuarios
+✅ Relaciones entre entidades configuradas
 
-✔ Configuración mediante variables de entorno
+✅ CRUD Categorías
 
-✔ Arquitectura ES Modules
+✅ CRUD Productos
 
-✔ Autenticación JWT implementada
+✅ CRUD Movimientos
 
-✔ Endpoint /api/auth/login operativo
+✅ CRUD Usuarios
 
-✔ Generación de Token JWT
+✅ Persistencia real de datos
 
-✔ Usuarios mock para autenticación
+✅ Login con JWT
 
-✔ Middleware de validación de token
+✅ Middleware de autenticación
 
-✔ Middleware de autorización por roles
+✅ Middleware de autorización por roles
 
-✔ Roles master y cajero
+✅ Roles master y cajero
 
-✔ Protección de rutas mediante Bearer Token
+✅ Hashing de contraseñas con bcrypt
 
-✔ Pruebas realizadas con Postman
+✅ Actualización automática de stock
 
-⚠ Integración con PostgreSQL pendiente
+✅ Validación de stock insuficiente
 
-⚠ Persistencia real de usuarios pendiente
+✅ Pruebas realizadas con Postman
+
+---
 
 ## 🚧 Próximas funcionalidades
 
 ### Seguridad
 
-✔ Autenticación JWT implementada
-
-✔ Middleware de validación de token implementado
-
-✔ Middleware de autorización por roles implementado
-
-* Hashing de contraseñas con bcrypt real
-* Recuperación de contraseña
 * Refresh Tokens
 * Logout seguro
-
-### Gestión de usuarios
-
-✔ Roles (master / cajero)
-
-* Restricción de acceso según permisos específicos
-* Auditoría de acciones de usuarios
-* Gestión de usuarios desde base de datos
-
-### Base de datos
-
-* Base de datos real con PostgreSQL
-* Persistencia de usuarios
-* Persistencia de productos
-* Persistencia de categorías
-* Persistencia de movimientos
+* Recuperación de contraseña
 
 ### Calidad
 
-* Validaciones mediante middleware
+* Validaciones avanzadas
 * Manejo centralizado de errores
 * Tests unitarios
 * Tests de integración
+
+### Documentación
+
+* Swagger / OpenAPI
 
 ### DevOps
 
 * Docker
 * Docker Compose
-* Swagger / OpenAPI
-* Deploy productivo
+* Despliegue productivo
 
 ---
 
@@ -352,4 +507,4 @@ Archivos migrados:
 
 Trabajo Final Integrador de la materia Metodología de Sistemas.
 
-Objetivo: diseñar e implementar una solución de gestión de inventario para pequeños comercios utilizando una arquitectura cliente-servidor basada en Node.js, Express, React y PostgreSQL.
+Objetivo: diseñar e implementar una solución de gestión de inventario para pequeños comercios utilizando una arquitectura cliente-servidor basada en Node.js, Express y PostgreSQL.

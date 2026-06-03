@@ -1,22 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-
-const usuariosMock = [
-    {
-        id: 1,
-        nombre: "Administrador",
-        email: "admin@test.com",
-        password: bcrypt.hashSync("123456", 10),
-        rol: "master",
-    },
-    {
-        id: 2,
-        nombre: "Cajero",
-        email: "cajero@test.com",
-        password: bcrypt.hashSync("123456", 10),
-        rol: "cajero",
-    },
-];
+import { Usuario } from "../models/index.js";
 
 export const login = async (req, res) => {
     try {
@@ -28,7 +12,9 @@ export const login = async (req, res) => {
             });
         }
 
-        const usuario = usuariosMock.find((user) => user.email === email);
+        const usuario = await Usuario.findOne({
+            where: { email }
+        });
 
         if (!usuario) {
             return res.status(401).json({

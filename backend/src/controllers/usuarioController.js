@@ -1,99 +1,132 @@
-let usuarios = [
-  {
-    id: 1,
-    nombre: "Administrador",
-    email: "admin@test.com",
-    password: "123456",
-    rol: "master",
-  },
-  {
-    id: 2,
-    nombre: "Cajero",
-    email: "cajero@test.com",
-    password: "123456",
-    rol: "cajero",
-  },
-];
+import bcrypt from 'bcryptjs';
+import { Usuario } from '../models/index.js';
 
-export const listarUsuarios = (req, res) => {
-  const usuariosSinPassword = usuarios.map(({ password, ...usuario }) => usuario);
-  res.json(usuariosSinPassword);
-};
-
-export const obtenerUsuarioPorId = (req, res) => {
-  const id = Number(req.params.id);
-  const usuario = usuarios.find((item) => item.id === id);
-
-  if (!usuario) {
-    return res.status(404).json({ mensaje: "Usuario no encontrado" });
-  }
-
-  const { password, ...usuarioSinPassword } = usuario;
-
-  res.json(usuarioSinPassword);
-};
-
-export const crearUsuario = (req, res) => {
-  const { nombre, email, password, rol } = req.body;
-
-  if (!nombre || !email || !password) {
-    return res.status(400).json({
-      mensaje: "Nombre, email y contraseña son obligatorios",
+export const listarUsuarios = async (req, res) => {
+  try {
+    const usuarios = await Usuario.findAll({
+      attributes: { exclude: ["password"] }
     });
+
+    res.json(usuarios);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al listar usuarios" });
   }
+};
 
-  const existeEmail = usuarios.some((item) => item.email === email);
+export const obtenerUsuarioPorId = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
 
-  if (existeEmail) {
-    return res.status(400).json({
-      mensaje: "Ya existe un usuario con ese email",
+    const usuario = await Usuario.findByPk(id, {
+      attributes: { exclude: ["password"] }
     });
+
+    if (!usuario) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    res.json(usuario);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al obtener usuario" });
   }
-
-  const nuevoUsuario = {
-    id: usuarios.length + 1,
-    nombre,
-    email,
-    password,
-    rol: rol || "cajero",
-  };
-
-  usuarios.push(nuevoUsuario);
-
-  const { password: _, ...usuarioSinPassword } = nuevoUsuario;
-
-  res.status(201).json(usuarioSinPassword);
 };
 
-export const actualizarUsuario = (req, res) => {
-  const id = Number(req.params.id);
-  const { nombre, email, password, rol } = req.body;
+export const crearUsuario = async (req, res) => {
+  try {
+    const { nombre, email, password, rol } = req.body;
 
-  const usuario = usuarios.find((item) => item.id === id);
+    if (!nombre || !email || !password) {
+      return res.status(400).json({
+        mensaje: "Nombre, email y contraseña son obligatorios",
+      });
+    }
 
-  if (!usuario) {
-    return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    const existeEmail = await Usuario.findOne({
+      where: { email }
+    });
+
+    if (existeEmail) {
+      return res.status(400).json({
+        mensaje: "Ya existe un usuario con ese email",
+      });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const nuevoUsuario = await Usuario.create({
+      nombre,
+      email,
+      password: passwordHash,
+      rol: rol || "cajero",
+    });
+
+    const usuarioSinPassword = {
+      id: nuevoUsuario.id,
+      nombre: nuevoUsuario.nombre,
+      email: nuevoUsuario.email,
+      rol: nuevoUsuario.rol,
+      createdAt: nuevoUsuario.createdAt,
+      updatedAt: nuevoUsuario.updatedAt,
+    };
+
+    res.status(201).json(usuarioSinPassword);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al crear usuario" });
   }
-
-  usuario.nombre = nombre || usuario.nombre;
-  usuario.email = email || usuario.email;
-  usuario.password = password || usuario.password;
-  usuario.rol = rol || usuario.rol;
-
-  const { password: _, ...usuarioSinPassword } = usuario;
-
-  res.json(usuarioSinPassword);
 };
 
-export const eliminarUsuario = (req, res) => {
-  const id = Number(req.params.id);
-  const existeUsuario = usuarios.some((item) => item.id === id);
+export const actualizarUsuario = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { nombre, email, password, rol } = req.body;
 
-  if (!existeUsuario) {
-    return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    const usuario = await Usuario.findByPk(id);
+
+    if (!usuario) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    const datosActualizados = {
+      nombre: nombre || usuario.nombre,
+      email: email || usuario.email,
+      rol: rol || usuario.rol,
+    };
+
+    if (password) {
+      datosActualizados.password = await bcrypt.hash(password, 10);
+    }
+
+    await usuario.update(datosActualizados);
+
+    const usuarioSinPassword = {
+      id: usuario.id,
+      nombre: usuario.nombre,
+      email: usuario.email,
+      rol: usuario.rol,
+      createdAt: usuario.createdAt,
+      updatedAt: usuario.updatedAt,
+    };
+
+    res.json(usuarioSinPassword);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al actualizar usuario" });
   }
+};
 
-  usuarios = usuarios.filter((item) => item.id !== id);
+export const eliminarUsuario = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
 
-  res.json({ mensaje: "Usuario eliminado correctamente" });
+    const usuario = await Usuario.findByPk(id);
+
+    if (!usuario) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    await usuario.destroy();
+
+    res.json({ mensaje: "Usuario eliminado correctamente" });
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al eliminar usuario" });
+  }
 };
