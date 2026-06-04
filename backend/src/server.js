@@ -12,7 +12,7 @@ async function startServer() {
 
     setupAssociations();
 
-    await sequelize.sync({ alter: true });
+    await sequelize.sync();
 
     console.log("Tablas sincronizadas correctamente");
 

@@ -484,6 +484,14 @@ Las rutas protegidas utilizan:
 
 ✅ Validación de nombre obligatorio en categorías
 
+✅ Validación de email válido en usuarios
+
+✅ Validación de email duplicado en creación y edición
+
+✅ Validación de contraseña mínima
+
+✅ Validación de roles permitidos
+
 ✅ Protección de endpoints mediante JWT
 
 ✅ Asociación automática del usuario autenticado al registrar movimientos
