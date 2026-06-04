@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import app from "./app.js";
 import { sequelize, testConnection } from "./config/database.js";
 import { setupAssociations } from "./models/index.js";
+import { crearAdminInicial } from "./seeders/adminSeeder.js";
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ async function startServer() {
 
     await sequelize.sync();
 
+    await crearAdminInicial();
     console.log("Tablas sincronizadas correctamente");
 
     app.listen(PORT, () => {
