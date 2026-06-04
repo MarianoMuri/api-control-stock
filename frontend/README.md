@@ -216,7 +216,15 @@ Funcionalidades:
 
 ✔ Alta de categorías
 
-✔ Modificación de categorías## Módulo de Usuarios
+✔ Modificación de categorías
+
+✔ Eliminación de categorías
+
+✔ Gestión de descripción
+
+---
+
+## Módulo de Usuarios
 
 Funcionalidades:
 
@@ -358,34 +366,13 @@ Funcionalidades:
 
 ✔ Persistencia de sesión
 
----
+✔ Testing de Login
 
-## Próximas mejoras
+✔ Testing de rutas privadas
 
-### Interfaz de usuario
+✔ Testing de Dashboard
 
-* Mejoras visuales y estilos CSS
-* Diseño responsive para dispositivos móviles
-* Componentes reutilizables
-* Modales de confirmación personalizados
-
-### Dashboard
-
-* Gráficas e indicadores visuales
-* Productos con stock crítico
-* Resumen de movimientos recientes
-
-### Calidad de software
-
-* Testing Frontend
-* Testing E2E
-* Manejo centralizado de errores
-* Optimización de componentes
-
-### Despliegue
-
-* Deploy del frontend
-* Configuración para entorno de producción
+✔ Build de producción validado
 
 ---
 
