@@ -9,18 +9,18 @@
 
 ## Descripción del Proyecto
 
-Este frontend forma parte del Proyecto Final de la materia Metodología de Sistemas.
+Este frontend forma parte del Proyecto Final Integrador de la Tecnicatura Universitaria en Programación.
 
-Implementa la interfaz de usuario del Sistema de Inventario y Control de Stock, consumiendo la API desarrollada en Node.js.
+Implementa la interfaz de usuario del Sistema de Inventario y Control de Stock, consumiendo una API REST desarrollada en Node.js, Express y PostgreSQL.
 
-Permite gestionar:
+El sistema permite administrar:
 
 * Productos
 * Categorías
 * Movimientos de stock
 * Usuarios
 
-El objetivo es ofrecer una interfaz simple, ágil y accesible para negocios pequeños o minimercados.
+Además incorpora autenticación mediante JWT y control de acceso a las distintas secciones de la aplicación.
 
 ---
 
@@ -32,8 +32,9 @@ El objetivo es ofrecer una interfaz simple, ágil y accesible para negocios pequ
 * React Hooks
 * Fetch API
 * LocalStorage
-* CSS propio
-* Thunder Client / Postman para pruebas
+* JavaScript ES6+
+* CSS
+* JWT
 
 ---
 
@@ -43,11 +44,8 @@ El objetivo es ofrecer una interfaz simple, ágil y accesible para negocios pequ
 src/
 ├── components/
 │   ├── BackToHome.jsx
-│   ├── PrivateRoute.jsx
-│   ├── ProductoForm.jsx
-│   ├── CategoriaForm.jsx
-│   ├── MovimientoForm.jsx
-│   └── ...
+│   └── PrivateRoute.jsx
+│
 ├── pages/
 │   ├── Login.jsx
 │   ├── Dashboard.jsx
@@ -59,10 +57,11 @@ src/
 │   ├── CategoriaDetalle.jsx
 │   ├── MovimientoDetalle.jsx
 │   └── UsuarioDetalle.jsx
+│
 ├── services/
 │   ├── api.js
-│   ├── productosService.js
 │   └── authService.js
+│
 ├── App.jsx
 ├── main.jsx
 └── index.css
@@ -72,236 +71,333 @@ src/
 
 ## Configuración del entorno
 
-Crear un archivo `.env` en la carpeta del frontend:
+Crear un archivo `.env` en la carpeta raíz del frontend:
 
 ```env
 VITE_API_URL=http://localhost:3000/api
 ```
 
-Crear también un archivo `.env.example`:
+También se recomienda incluir:
 
 ```env
 VITE_API_URL=
 ```
 
-Esto permite cambiar fácilmente la URL de la API entre desarrollo y producción.
+como archivo `.env.example`.
 
 ---
 
 ## Instalación y ejecución
 
-### 1) Clonar el repositorio
-
-```bash
-git clone https://github.com/MarianoMuri/api-control-stock
-cd frontend
-```
-
-### 2) Instalar dependencias
+### Instalar dependencias
 
 ```bash
 npm install
 ```
 
-### 3) Ejecutar el servidor de desarrollo
+### Ejecutar entorno de desarrollo
 
 ```bash
 npm run dev
 ```
 
-El frontend estará disponible en:
+La aplicación estará disponible en:
 
 ```text
 http://localhost:5173
 ```
 
-(La URL puede variar según Vite).
-
 ---
 
-## Conexión con el backend
+## Conexión con la API
 
-El frontend se comunica con la API en:
-
-```text
-http://localhost:3000/api
-```
-
-La URL base se configura mediante:
+El frontend consume la API mediante:
 
 ```env
 VITE_API_URL=http://localhost:3000/api
 ```
 
+Todas las solicitudes autenticadas utilizan JWT almacenado en LocalStorage.
+
+La configuración de autorización se centraliza en:
+
+```text
+src/services/api.js
+```
+
+que agrega automáticamente el token a cada request.
+
 ---
 
-## Pantallas incluidas
+## Autenticación y Seguridad
 
-✔ Login de usuarios
+### Login
 
-✔ Dashboard / Home
+El sistema implementa autenticación mediante JWT.
 
-✔ Listado de Productos
+Pantalla:
 
-✔ Alta de Productos
+```text
+/login
+```
 
-✔ Edición de Productos
+Servicios:
 
-✔ Eliminación de Productos
+```text
+src/services/authService.js
+src/services/api.js
+```
 
-✔ Gestión de Categorías
+Funcionalidades:
 
-✔ Registro de Movimientos de Stock
+✔ Inicio de sesión
 
-✔ Gestión de Usuarios
+✔ Persistencia de sesión mediante LocalStorage
 
-✔ Vista de detalle de Productos
+✔ Almacenamiento de token JWT
 
-✔ Vista de detalle de Categorías
+✔ Almacenamiento de usuario autenticado
 
-✔ Vista de detalle de Movimientos
+✔ Logout
 
-✔ Vista de detalle de Usuarios
+✔ Redirección automática al Login cuando el token es inválido
+
+✔ Protección de rutas privadas mediante PrivateRoute
+
+---
+
+## Dashboard
+
+La pantalla principal muestra información obtenida en tiempo real desde la API.
+
+Indicadores:
+
+✔ Total de Productos
+
+✔ Total de Categorías
+
+✔ Total de Movimientos
+
+✔ Total de Usuarios
+
+Además permite navegar directamente hacia cada módulo.
+
+---
+
+## Módulo de Productos
+
+Funcionalidades:
+
+✔ Listado de productos
+
+✔ Consulta de detalle
+
+✔ Alta de productos
+
+✔ Modificación de productos
+
+✔ Eliminación de productos
+
+✔ Selección de categoría asociada
+
+✔ Visualización de stock
+
+✔ Visualización de precio
+
+---
+
+## Módulo de Categorías
+
+Funcionalidades:
+
+✔ Listado de categorías
+
+✔ Consulta de detalle
+
+✔ Alta de categorías
+
+✔ Modificación de categorías## Módulo de Usuarios
+
+Funcionalidades:
+
+✔ Listado de usuarios
+
+✔ Consulta de detalle
+
+✔ Alta de usuarios
+
+✔ Modificación de usuarios
+
+✔ Eliminación de usuarios
+
+✔ Gestión de roles (master / cajero)
+
+✔ Gestión de credenciales
+
+---
+
+## Módulo de Movimientos
+
+Funcionalidades:
+
+✔ Listado de movimientos
+
+✔ Consulta de detalle
+
+✔ Registro de ingresos de stock
+
+✔ Registro de egresos de stock
+
+✔ Selección de producto asociado
+
+✔ Visualización del usuario que realizó la operación
+
+✔ Eliminación de movimientos
+
+✔ Actualización automática del stock reflejada en el sistema
+
+---
+
+## Pantallas implementadas
+
+✔ Login
+
+✔ Dashboard
+
+✔ Productos
+
+✔ Categorías
+
+✔ Movimientos
+
+✔ Usuarios
+
+✔ Detalle de Producto
+
+✔ Detalle de Categoría
+
+✔ Detalle de Movimiento
+
+✔ Detalle de Usuario
 
 ---
 
 ## Funcionalidades implementadas
 
-### Gestión de Productos
+### Navegación
 
-* Alta de productos
-* Modificación de productos
-* Eliminación de productos
-* Consulta de detalle
+✔ React Router DOM
 
-### Gestión de Categorías
+✔ Navegación protegida
 
-* Alta de categorías
-* Modificación de categorías
-* Eliminación de categorías
-* Consulta de detalle
+✔ Navegación entre módulos
 
-### Gestión de Movimientos
+✔ Enlaces a vistas de detalle
 
-* Registro de ingresos
-* Registro de egresos
-* Consulta de movimientos
+✔ Botón de regreso al inicio
 
-### Gestión de Usuarios
+### Consumo de API
 
-* Alta de usuarios
-* Modificación de usuarios
-* Eliminación de usuarios
-* Consulta de detalle
+✔ Integración completa con API REST
 
-### Autenticación (Frontend)
+✔ Solicitudes GET
 
-* Pantalla de Login
-* Servicio de autenticación (`authService.js`)
-* Persistencia de sesión mediante LocalStorage
-* Protección de rutas privadas mediante `PrivateRoute`
-* Cierre de sesión (Logout)
-* Preparado para integración con JWT
+✔ Solicitudes POST
 
----
+✔ Solicitudes PUT
 
-## Mejoras implementadas en esta versión
+✔ Solicitudes DELETE
 
-### Sprint: Autenticación de Usuarios
+✔ Manejo de token JWT
 
-Se incorporó la estructura inicial de autenticación del frontend:
+✔ Manejo de errores de autenticación
 
-* Creación de Login.jsx
-* Creación de authService.js
-* Implementación de PrivateRoute.jsx
-* Protección de pantallas privadas
-* Persistencia de sesión
-* Redirección automática al Login
-* Preparación para autenticación JWT desde backend
+### Persistencia
 
----
+✔ Persistencia de sesión mediante LocalStorage
 
-## Próximas mejoras
+✔ Persistencia del token JWT
 
-### En desarrollo
-
-* Endpoint de Login en Backend
-* Integración completa JWT
-* Roles (master / cajero)
-
-### Pendientes
-
-* Integración completa con base de datos real
-* Dashboard con gráficas
-* Indicadores de stock crítico
-* Notificaciones automáticas
-* Modales reutilizables
-* Loaders globales
-* Manejo centralizado de errores
-* Testing Frontend
-* Testing E2E
-* Deploy en Vercel
-* Deploy en Netlify
-* Recuperación de contraseña
-* Auditoría de acciones de usuarios
+✔ Persistencia de usuario autenticado
 
 ---
 
 ## Estado actual del proyecto
 
-### Backend
-
-✔ API REST operativa
-
-✔ CRUD de Productos
-
-✔ CRUD de Categorías
-
-✔ CRUD de Movimientos
-
-✔ CRUD de Usuarios
-
-✔ Conexión con PostgreSQL
-
 ### Frontend
 
-✔ CRUD visual completo
+✔ React configurado
 
-✔ Navegación entre pantallas
+✔ Vite configurado
 
-✔ Formularios de gestión
+✔ React Router configurado
 
-✔ Vistas de detalle
-
-✔ Autenticación inicial implementada
+✔ Autenticación JWT implementada
 
 ✔ Protección de rutas privadas
+
+✔ Dashboard conectado a datos reales
+
+✔ CRUD completo de Categorías
+
+✔ CRUD completo de Productos
+
+✔ CRUD completo de Usuarios
+
+✔ Gestión completa de Movimientos
+
+✔ Vistas de detalle conectadas a la API
+
+✔ Integración completa con backend
+
+✔ Consumo de datos reales desde PostgreSQL
+
+✔ Manejo de errores de API
+
+✔ Navegación entre módulos
+
+✔ Persistencia de sesión
+
+---
+
+## Próximas mejoras
+
+### Interfaz de usuario
+
+* Mejoras visuales y estilos CSS
+* Diseño responsive para dispositivos móviles
+* Componentes reutilizables
+* Modales de confirmación personalizados
+
+### Dashboard
+
+* Gráficas e indicadores visuales
+* Productos con stock crítico
+* Resumen de movimientos recientes
+
+### Calidad de software
+
+* Testing Frontend
+* Testing E2E
+* Manejo centralizado de errores
+* Optimización de componentes
+
+### Despliegue
+
+* Deploy del frontend
+* Configuración para entorno de producción
 
 ---
 
 ## Proyecto Académico
 
-Trabajo Final Integrador de la materia Metodología de Sistemas.
+Proyecto Final Integrador de la Tecnicatura Universitaria en Programación.
 
-Objetivo: diseñar e implementar una solución de gestión de inventario para pequeños comercios utilizando una arquitectura cliente-servidor basada en React, Node.js, Express y PostgreSQL.
+Objetivo:
 
+Diseñar e implementar un sistema web de gestión de inventario utilizando una arquitectura cliente-servidor basada en React, Node.js, Express y PostgreSQL, aplicando buenas prácticas de desarrollo, autenticación mediante JWT, persistencia de datos y metodologías ágiles de trabajo.
 
+✔ Eliminación de categorías
 
-----------------------------------------------------------
-Próximas mejoras
+✔ Gestión de descripción
 
-Roles (master / cajero)
-
-Integración completa con la base de datos real
-
-Dashboard con gráficas
-
-Notificaciones de stock crítico
-
-Mejoras de usabilidad (modales, loaders, errores globales)
-
-Testing en frontend
-
-Deploy en Vercel / Netlify
-
-----------------------------------------------------------
