@@ -37,10 +37,18 @@ Actualmente cuenta con persistencia real de datos en PostgreSQL y relaciones ent
 * bcryptjs
 * dotenv
 * cors
+* Joi
+* Swagger UI
+* Swagger JSDoc
 
 ### Base de Datos
 
 * PostgreSQL
+
+### Contenerización
+
+* Docker
+* Docker Compose
 
 ### Testing
 
@@ -140,12 +148,19 @@ http://localhost:3000
 
 Al iniciar:
 
+* Se crea automáticamente un usuario administrador inicial si no existe.
 * Sequelize se conecta a PostgreSQL.
 * Se sincronizan automáticamente las tablas.
 * Se crean las relaciones entre modelos.
 * Se habilitan las rutas protegidas mediante JWT.
 
 ---
+
+Usuario administrador inicial:
+
+email: admin@test.com
+password: 123456
+rol: master
 
 ## 🗄️ Modelo de Datos
 
@@ -492,11 +507,41 @@ Las rutas protegidas utilizan:
 
 ✅ Validación de roles permitidos
 
+✅ Validaciones con Joi
+
+✅ Middleware reutilizable de validación de esquemas
+
 ✅ Protección de endpoints mediante JWT
+
+✅ Docker implementado
+
+✅ Docker Compose configurado
+
+✅ PostgreSQL ejecutándose en contenedor Docker
+
+✅ Backend ejecutándose en contenedor Docker
+
+✅ Comunicación entre servicios mediante Docker Network
 
 ✅ Asociación automática del usuario autenticado al registrar movimientos
 
 ✅ Control de permisos por rol
+
+✅ Historial completo de movimientos
+
+✅ Endpoint histórico de movimientos (/api/movimientos/historico)
+
+✅ Documentación interactiva con Swagger UI
+
+✅ Documentación de autenticación JWT
+
+✅ Documentación de Usuarios
+
+✅ Documentación de Categorías
+
+✅ Documentación de Productos
+
+✅ Documentación de Movimientos
 
 ✅ Pruebas funcionales realizadas con Postman
 
@@ -511,6 +556,8 @@ Las rutas protegidas utilizan:
 ✅ Restricción de acceso según rol
 
 ✅ Contraseñas almacenadas mediante bcrypt
+
+✅ Validaciones de entrada con Joi
 
 ### Base de Datos
 
@@ -534,36 +581,22 @@ Las rutas protegidas utilizan:
 
 ✅ Historial completo de movimientos
 
+### Documentación
+
+✅ Swagger UI
+
+✅ Documentación de endpoints protegidos
+
+✅ Documentación de autenticación JWT
+
 
 ## 🚧 Próximas mejoras
 
-### Seguridad
-
-* Refresh Tokens
-* Gestión de sesiones
-* Recuperación y restablecimiento de contraseñas
-
 ### Calidad del software
 
-* Validaciones avanzadas de datos
-* Manejo centralizado de errores
 * Tests unitarios
 * Tests de integración
-* Cobertura de código
-
-### Documentación
-
-* Swagger
-* Documentación técnica de la API
-* Manual de instalación y despliegue
-
-### Infraestructura
-
-* Contenerización con Docker
-* Docker Compose para entorno completo
-* Configuración para entornos de producción
-
----
+* Tests de integración frontend + backend
 
 ## 🎓 Proyecto Final Integrador
 
