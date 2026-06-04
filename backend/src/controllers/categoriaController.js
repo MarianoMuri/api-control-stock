@@ -1,4 +1,4 @@
-import { Categoria } from '../models/index.js';
+import { Categoria, Producto } from '../models/index.js';
 
 export const listarCategorias = async (req, res) => {
   try {
@@ -91,10 +91,24 @@ export const actualizarCategoria = async (req, res) => {
 export const eliminarCategoria = async (req, res) => {
   try {
     const id = Number(req.params.id);
-    const categoria = await Categoria.findByPk(id);
+
+    const categoria = await Categoria.findByPk(id, {
+      include: [
+        {
+          model: Producto,
+          as: "productos",
+        },
+      ],
+    });
 
     if (!categoria) {
       return res.status(404).json({ mensaje: "Categoría no encontrada" });
+    }
+
+    if (categoria.productos && categoria.productos.length > 0) {
+      return res.status(400).json({
+        mensaje: "No se puede eliminar una categoría con productos asociados",
+      });
     }
 
     await categoria.destroy();

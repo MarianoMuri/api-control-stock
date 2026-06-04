@@ -13,6 +13,13 @@ import {
     autorizarRoles,
 } from "../middlewares/authMiddleware.js";
 
+import { validarSchema } from "../middlewares/validarSchema.js";
+
+import {
+    crearUsuarioSchema,
+    actualizarUsuarioSchema,
+} from "../validations/usuarioValidation.js";
+
 const router = express.Router();
 
 /**
@@ -104,7 +111,13 @@ router.get("/:id", verificarToken, autorizarRoles("master"), obtenerUsuarioPorId
  *       403:
  *         description: No tenés permisos para acceder a este recurso
  */
-router.post("/", verificarToken, autorizarRoles("master"), crearUsuario);
+router.post(
+    "/",
+    verificarToken,
+    autorizarRoles("master"),
+    validarSchema(crearUsuarioSchema),
+    crearUsuario
+);
 
 /**
  * @swagger
@@ -148,7 +161,13 @@ router.post("/", verificarToken, autorizarRoles("master"), crearUsuario);
  *       404:
  *         description: Usuario no encontrado
  */
-router.put("/:id", verificarToken, autorizarRoles("master"), actualizarUsuario);
+router.put(
+    "/:id",
+    verificarToken,
+    autorizarRoles("master"),
+    validarSchema(actualizarUsuarioSchema),
+    actualizarUsuario
+);
 
 /**
  * @swagger
