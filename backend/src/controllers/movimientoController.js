@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import { Movimiento, Producto, Usuario } from '../models/index.js';
 
 export const listarMovimientos = async (req, res) => {
@@ -19,6 +20,68 @@ export const listarMovimientos = async (req, res) => {
     res.json(movimientos);
   } catch (error) {
     res.status(500).json({ mensaje: "Error al listar movimientos" });
+  }
+};
+
+export const historicoMovimientos = async (req, res) => {
+  try {
+    const { tipo, fechaDesde, fechaHasta, id_producto } = req.query;
+
+    const filtros = {};
+
+    if (tipo) {
+      if (tipo !== "ingreso" && tipo !== "egreso") {
+        return res.status(400).json({
+          mensaje: "El tipo debe ser ingreso o egreso",
+        });
+      }
+
+      filtros.tipo = tipo;
+    }
+
+    if (id_producto) {
+      const idProductoNumerico = Number(id_producto);
+
+      if (isNaN(idProductoNumerico)) {
+        return res.status(400).json({
+          mensaje: "id_producto debe ser numérico",
+        });
+      }
+
+      filtros.id_producto = idProductoNumerico;
+    }
+
+    if (fechaDesde || fechaHasta) {
+      filtros.fecha = {};
+
+      if (fechaDesde) {
+        filtros.fecha[Op.gte] = fechaDesde;
+      }
+
+      if (fechaHasta) {
+        filtros.fecha[Op.lte] = fechaHasta;
+      }
+    }
+
+    const movimientos = await Movimiento.findAll({
+      where: filtros,
+      include: [
+        {
+          model: Producto,
+          as: "producto"
+        },
+        {
+          model: Usuario,
+          as: "usuario",
+          attributes: ["id", "nombre", "email", "rol"]
+        }
+      ],
+      order: [["fecha", "DESC"], ["createdAt", "DESC"]]
+    });
+
+    res.json(movimientos);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al obtener histórico de movimientos" });
   }
 };
 
@@ -77,6 +140,7 @@ export const crearMovimiento = async (req, res) => {
     if (!usuario) {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
+
     const cantidadNumerica = Number(cantidad);
 
     if (isNaN(cantidadNumerica) || cantidadNumerica <= 0) {

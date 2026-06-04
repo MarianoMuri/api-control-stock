@@ -2,6 +2,7 @@ import express from "express";
 
 import {
     listarMovimientos,
+    historicoMovimientos,
     obtenerMovimientoPorId,
     crearMovimiento,
     eliminarMovimiento,
@@ -32,16 +33,52 @@ const router = express.Router();
  *     responses:
  *       200:
  *         description: Lista de movimientos obtenida correctamente
- *       401:
- *         description: Token requerido o inválido
- *       403:
- *         description: No tenés permisos para acceder a este recurso
  */
 router.get(
     "/",
     verificarToken,
     autorizarRoles("master", "cajero"),
     listarMovimientos
+);
+
+/**
+ * @swagger
+ * /movimientos/historico:
+ *   get:
+ *     summary: Consultar histórico de movimientos
+ *     tags: [Movimientos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: tipo
+ *         schema:
+ *           type: string
+ *         description: ingreso o egreso
+ *       - in: query
+ *         name: id_producto
+ *         schema:
+ *           type: integer
+ *         description: ID del producto
+ *       - in: query
+ *         name: fechaDesde
+ *         schema:
+ *           type: string
+ *           format: date
+ *       - in: query
+ *         name: fechaHasta
+ *         schema:
+ *           type: string
+ *           format: date
+ *     responses:
+ *       200:
+ *         description: Histórico obtenido correctamente
+ */
+router.get(
+    "/historico",
+    verificarToken,
+    autorizarRoles("master", "cajero"),
+    historicoMovimientos
 );
 
 /**
@@ -58,7 +95,6 @@ router.get(
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID del movimiento
  *     responses:
  *       200:
  *         description: Movimiento obtenido correctamente
@@ -100,16 +136,9 @@ router.get(
  *               id_producto:
  *                 type: integer
  *                 example: 1
- *               fecha:
- *                 type: string
- *                 format: date-time
  *     responses:
  *       201:
  *         description: Movimiento registrado correctamente
- *       400:
- *         description: Datos inválidos o stock insuficiente
- *       404:
- *         description: Producto o usuario no encontrado
  */
 router.post(
     "/",
@@ -132,14 +161,11 @@ router.post(
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID del movimiento
  *     responses:
  *       200:
  *         description: Movimiento eliminado correctamente
  *       404:
  *         description: Movimiento no encontrado
- *       403:
- *         description: No tenés permisos para acceder a este recurso
  */
 router.delete(
     "/:id",
