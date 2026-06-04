@@ -93,6 +93,9 @@ function Usuarios() {
             return;
         }
 
+        setError("");
+        setMensaje("");
+
         try {
             await apiFetch(`/usuarios/${id}`, {
                 method: "DELETE",
