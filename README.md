@@ -1,145 +1,364 @@
 # Sistema de Inventario y Control de Stock
 
-Proyecto académico que implementa un sistema completo de inventario utilizando un backend desarrollado con Node.js, Express y Sequelize, y un frontend construido con React. El objetivo es gestionar productos, categorías y movimientos de stock, incluyendo funcionalidades avanzadas como reportes y documentación por Sprint.
+Proyecto Final Integrador de la Tecnicatura Universitaria en Programación.
+
+El sistema permite gestionar inventario mediante una aplicación web full stack compuesta por un backend desarrollado con Node.js, Express y PostgreSQL, y un frontend construido con React.
+
+La aplicación administra productos, categorías, movimientos de stock y usuarios, incorporando autenticación mediante JWT, control de acceso, documentación técnica y pruebas de funcionamiento.
 
 ---
 
-## 1. Tecnologías utilizadas
+# 1. Tecnologías utilizadas
 
-### Backend
-- Node.js
-- Express
-- Sequelize ORM
-- PostgreSQL
-- Dotenv
-- Cors
-- Herramientas de prueba: Thunder Client / Postman
+## Backend
 
-### Frontend
-- React
-- React Router
-- Fetch API
-- Vite o Create React App (según etapa del proyecto)
+* Node.js
+* Express
+* PostgreSQL
+* Sequelize ORM
+* JWT (JSON Web Token)
+* Bcrypt
+* Joi
+* Dotenv
+* Cors
+* Swagger
+* Docker
+* Docker Compose
+
+## Frontend
+
+* React
+* React Router DOM
+* Vite
+* Fetch API
+* LocalStorage
+* CSS
+* Vitest
+* React Testing Library
+
+## Herramientas de apoyo
+
+* Git
+* GitHub
+* GitHub Projects
+* Thunder Client
+* Postman
 
 ---
 
-## 2. Instalación y ejecución
+# 2. Instalación y ejecución
 
-### Backend
+## Backend
 
-1. Instalar dependencias:
-   ```bash
-   cd backend
-   npm install
+### Instalar dependencias
 
-2. Configurar variables de entorno:
-Crear archivo .env con:
+```bash
+cd backend
+npm install
+```
+
+### Configurar variables de entorno
+
+Crear un archivo `.env`:
+
+```env
 DB_HOST=localhost
 DB_USER=postgres
 DB_PASSWORD=tu_password
 DB_NAME=control_stock
 DB_PORT=5432
 
-3. Ejecutar migraciones:
+JWT_SECRET=tu_clave_secreta
+```
+
+### Ejecutar migraciones
+
+```bash
 npx sequelize-cli db:migrate
+```
 
-4. Iniciar el servidor:
+### Iniciar servidor
+
+```bash
 npm run dev
+```
 
+Servidor disponible en:
 
-Frontend
+```text
+http://localhost:3000
+```
 
-Instalar dependencias:
+### Usuario administrador inicial
+
+```text
+Email: admin@test.com
+Contraseña: admin123
+Rol: master
+```
+
+---
+
+## Frontend
+
+### Instalar dependencias
+
+```bash
 cd frontend
 npm install
+```
 
-Crear archivo .env:
-VITE_API_URL=http://localhost:3000
+### Configurar variables de entorno
 
-Ejecutar:
+Crear archivo `.env`:
+
+```env
+VITE_API_URL=http://localhost:3000/api
+```
+
+### Ejecutar aplicación
+
+```bash
 npm run dev
+```
 
+Frontend disponible en:
 
-## 3. Estructura del proyecto
+```text
+http://localhost:5173
+```
+
+---
+
+# 3. Estructura del proyecto
+
+```text
 backend/
-  config/
-  controllers/
-  models/
-  routes/
-  migrations/
+├── config/
+├── controllers/
+├── middleware/
+├── migrations/
+├── models/
+├── routes/
+├── services/
+├── swagger/
+└── app.js
 
 frontend/
-  src/
-  public/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── services/
+│   ├── tests/
+│   ├── App.jsx
+│   └── main.jsx
+└── public/
 
-documentos/
-  sprint1.md
-  sprint2.md
+docs/
+├── sprint1.md
+├── sprint2.md
+└── tests-integracion-frontend.md
+```
 
-## 4. Endpoints principales (resumen)
-Categorías
+---
 
-GET /api/categorias
+# 4. Funcionalidades implementadas
 
-POST /api/categorias
+## Autenticación
 
-PUT /api/categorias/:id
+✔ Login mediante JWT
 
+✔ Protección de rutas privadas
+
+✔ Persistencia de sesión
+
+✔ Logout
+
+✔ Gestión de usuarios autenticados
+
+---
+
+## Gestión de Productos
+
+✔ Alta de productos
+
+✔ Modificación de productos
+
+✔ Eliminación de productos
+
+✔ Consulta de detalle
+
+✔ Asociación a categorías
+
+✔ Gestión de stock
+
+---
+
+## Gestión de Categorías
+
+✔ Alta de categorías
+
+✔ Modificación de categorías
+
+✔ Eliminación de categorías
+
+✔ Consulta de detalle
+
+✔ Gestión de descripción
+
+---
+
+## Gestión de Usuarios
+
+✔ Alta de usuarios
+
+✔ Modificación de usuarios
+
+✔ Eliminación de usuarios
+
+✔ Consulta de detalle
+
+✔ Gestión de roles
+
+✔ Gestión de credenciales
+
+---
+
+## Gestión de Movimientos
+
+✔ Registro de ingresos
+
+✔ Registro de egresos
+
+✔ Consulta de movimientos
+
+✔ Actualización automática del stock
+
+✔ Asociación de movimientos a productos
+
+✔ Asociación de movimientos a usuarios
+
+---
+
+## Dashboard
+
+✔ Totales de productos
+
+✔ Totales de categorías
+
+✔ Totales de movimientos
+
+✔ Totales de usuarios
+
+✔ Navegación a módulos principales
+
+---
+
+# 5. Endpoints principales
+
+## Autenticación
+
+```http
+POST /api/auth/login
+```
+
+## Categorías
+
+```http
+GET    /api/categorias
+POST   /api/categorias
+PUT    /api/categorias/:id
 DELETE /api/categorias/:id
+```
 
-Productos
+## Productos
 
-GET /api/productos
-
-POST /api/productos
-
-PUT /api/productos/:id
-
+```http
+GET    /api/productos
+POST   /api/productos
+PUT    /api/productos/:id
 DELETE /api/productos/:id
+```
 
-Movimientos
+## Usuarios
 
-GET /api/movimientos
+```http
+GET    /api/usuarios
+POST   /api/usuarios
+PUT    /api/usuarios/:id
+DELETE /api/usuarios/:id
+```
 
-POST /api/movimientos
+## Movimientos
 
-Reportes (Sprint 2)
+```http
+GET    /api/movimientos
+POST   /api/movimientos
+DELETE /api/movimientos/:id
+```
 
-GET /api/movimientos/historico
+---
 
-PDF de movimientos (pendiente)
+# 6. Testing
 
-## 5. Documentación por Sprint
+Se implementaron pruebas automatizadas en el frontend utilizando Vitest y React Testing Library.
 
-Los avances, historias de usuario y tareas se encuentran documentados en:
+Pruebas realizadas:
 
-documentos/sprint1.md
+✔ Login
 
-documentos/sprint2.md
+✔ Dashboard
 
-## 6. Gestión del proyecto
+✔ PrivateRoute
 
-El seguimiento del proyecto se realiza mediante un tablero Kanban en GitHub Projects, que incluye:
+Además se verificó correctamente:
 
-Backlog
+✔ Build de producción
 
-Reserva / To Do
+✔ Navegación protegida
 
-En curso
+✔ Integración con API REST
 
-En revisión
+---
 
-Finalizado
+# 7. Documentación
 
-Tablero:
-https://github.com/users/MarianoMuri/projects/2
+La documentación del proyecto se encuentra en la carpeta:
 
-## 7. Integrantes
+```text
+docs/
+```
 
-Mariano Murinigo
+Incluye:
 
-Jennifer Castro
+* Sprint 1
+* Sprint 2
+* Casos de prueba e integración frontend
 
-## 8. Objetivo general del proyecto
+---
 
-Desarrollar un sistema web funcional para la gestión de inventario y movimientos de stock, aplicando metodologías ágiles, control de versiones, documentación por Sprint y buenas prácticas de desarrollo full stack.
+# 8. Gestión del proyecto
+
+El desarrollo se organizó utilizando metodología ágil Scrum y seguimiento visual mediante GitHub Projects (Kanban).
+
+Columnas utilizadas:
+
+* Backlog
+* To Do
+* In Progress
+* Review
+* Done
+
+---
+
+# 9. Integrantes
+
+👩 Jennifer Castro
+
+👨 Mariano Murinigo
+
+---
+
+# 10. Objetivo del proyecto
+
+Diseñar e implementar un sistema web full stack para la gestión de inventario y control de stock, permitiendo administrar productos, categorías, movimientos y usuarios mediante una interfaz React conectada a una API REST desarrollada con Node.js, Express y PostgreSQL, aplicando autenticación JWT, persistencia de datos, testing, documentación técnica y metodologías ágiles de trabajo.
