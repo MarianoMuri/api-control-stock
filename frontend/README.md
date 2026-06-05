@@ -71,11 +71,10 @@ src/
 
 ## Configuración del entorno
 
-Crear un archivo `.env` en la carpeta raíz del frontend:
+Crear un archivo `.env` en la raíz del frontend:
 
 ```env
 VITE_API_URL=http://localhost:3000/api
-```
 
 También se recomienda incluir:
 
@@ -383,8 +382,3 @@ Proyecto Final Integrador de la Tecnicatura Universitaria en Programación.
 Objetivo:
 
 Diseñar e implementar un sistema web de gestión de inventario utilizando una arquitectura cliente-servidor basada en React, Node.js, Express y PostgreSQL, aplicando buenas prácticas de desarrollo, autenticación mediante JWT, persistencia de datos y metodologías ágiles de trabajo.
-
-✔ Eliminación de categorías
-
-✔ Gestión de descripción
-
