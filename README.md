@@ -1,5 +1,7 @@
 # Sistema de Inventario y Control de Stock
 
+[![CI](https://github.com/MarianoMuri/api-control-stock/actions/workflows/ci.yml/badge.svg)](https://github.com/MarianoMuri/api-control-stock/actions/workflows/ci.yml)
+
 Aplicación web full stack para gestionar inventario: productos, categorías, movimientos de stock y usuarios con roles.
 
 **Stack:** Node.js · Express · PostgreSQL · Sequelize · JWT · React · Vite · Vitest · Swagger · Docker
