@@ -2,6 +2,10 @@
 
 [![CI](https://github.com/MarianoMuri/api-control-stock/actions/workflows/ci.yml/badge.svg)](https://github.com/MarianoMuri/api-control-stock/actions/workflows/ci.yml)
 
+**🚀 Demo en vivo:** https://inventory-control-z7uw.onrender.com  
+Usuario de prueba: `admin@test.com` / `admin123`  
+<sub>Alojado en el plan gratuito de Render: si nadie lo usó en un rato, la primera carga puede tardar hasta un minuto mientras la API despierta.</sub>
+
 Aplicación web full stack para gestionar inventario: productos, categorías, movimientos de stock y usuarios con roles.
 
 **Stack:** Node.js · Express · PostgreSQL · Sequelize · JWT · React · Vite · Vitest · Swagger · Docker
