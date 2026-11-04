@@ -1,10 +1,13 @@
 import bcrypt from "bcryptjs";
 import { Usuario } from "../models/index.js";
 
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@test.com";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
+
 export const crearAdminInicial = async () => {
     try {
         const adminExistente = await Usuario.findOne({
-            where: { email: "admin@test.com" },
+            where: { email: ADMIN_EMAIL },
         });
 
         if (adminExistente) {
@@ -12,11 +15,11 @@ export const crearAdminInicial = async () => {
             return;
         }
 
-        const passwordHash = await bcrypt.hash("123456", 10);
+        const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 10);
 
         await Usuario.create({
             nombre: "Administrador",
-            email: "admin@test.com",
+            email: ADMIN_EMAIL,
             password: passwordHash,
             rol: "master",
         });

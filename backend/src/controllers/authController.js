@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { Usuario } from "../models/index.js";
+import { getJwtSecret } from "../config/jwt.js";
 
 export const login = async (req, res) => {
     try {
@@ -36,7 +37,7 @@ export const login = async (req, res) => {
                 email: usuario.email,
                 rol: usuario.rol,
             },
-            process.env.JWT_SECRET || "clave_secreta_desarrollo",
+            getJwtSecret(),
             {
                 expiresIn: "2h",
             }

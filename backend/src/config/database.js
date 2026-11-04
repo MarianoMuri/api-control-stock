@@ -5,7 +5,7 @@ dotenv.config();
 
 const sequelize = new Sequelize(
   process.env.DB_NAME || 'control_stock',
-  process.env.DB_USER || 'jennifercastro',
+  process.env.DB_USER || 'postgres',
   process.env.DB_PASSWORD || null,
   {
     host: process.env.DB_HOST || 'localhost',

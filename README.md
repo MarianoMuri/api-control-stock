@@ -1,10 +1,12 @@
 # Sistema de Inventario y Control de Stock
 
-Proyecto Final Integrador de la Tecnicatura Universitaria en Programación.
+Aplicación web full stack para gestionar inventario: productos, categorías, movimientos de stock y usuarios con roles.
 
-El sistema permite gestionar inventario mediante una aplicación web full stack compuesta por un backend desarrollado con Node.js, Express y PostgreSQL, y un frontend construido con React.
+**Stack:** Node.js · Express · PostgreSQL · Sequelize · JWT · React · Vite · Vitest · Swagger · Docker
 
-La aplicación administra productos, categorías, movimientos de stock y usuarios, incorporando autenticación mediante JWT, control de acceso, documentación técnica y pruebas de funcionamiento.
+> **English summary:** Full-stack inventory management system. REST API built with Node.js, Express and PostgreSQL (Sequelize ORM), with JWT authentication, role-based authorization, Joi validation and Swagger docs. React frontend with protected routes, CRUD screens and a dashboard, tested with Vitest and React Testing Library. Runs locally or with Docker Compose.
+
+Proyecto Final Integrador de la Tecnicatura Universitaria en Programación (UTN).
 
 ---
 
@@ -48,85 +50,54 @@ La aplicación administra productos, categorías, movimientos de stock y usuario
 
 # 2. Instalación y ejecución
 
-## Backend
+## Opción A: Docker (recomendada)
 
-### Instalar dependencias
+```bash
+cp .env.example .env
+# Editá .env y completá POSTGRES_PASSWORD y JWT_SECRET
+docker compose up --build
+```
+
+La API queda en `http://localhost:3000` y la documentación Swagger en `http://localhost:3000/api-docs`.
+
+## Opción B: Local
+
+### Backend
+
+Requiere Node.js 20+ y PostgreSQL con una base `control_stock` creada.
 
 ```bash
 cd backend
 npm install
-```
-
-### Configurar variables de entorno
-
-Crear un archivo `.env`:
-
-```env
-DB_HOST=localhost
-DB_USER=postgres
-DB_PASSWORD=tu_password
-DB_NAME=control_stock
-DB_PORT=5432
-
-JWT_SECRET=tu_clave_secreta
-```
-
-### Ejecutar migraciones
-
-```bash
-npx sequelize-cli db:migrate
-```
-
-### Iniciar servidor
-
-```bash
+cp .env.example .env
+# Editá .env: datos de tu PostgreSQL y JWT_SECRET (obligatorio)
 npm run dev
 ```
 
-Servidor disponible en:
+Al iniciar, el servidor crea las tablas automáticamente (`sequelize.sync`) y el usuario administrador si no existe. Si falta `JWT_SECRET`, el servidor no arranca.
 
-```text
-http://localhost:3000
-```
+Servidor disponible en `http://localhost:3000`. Swagger en `http://localhost:3000/api-docs`.
 
-### Usuario administrador inicial
-
-```text
-Email: admin@test.com
-Contraseña: admin123
-Rol: master
-```
-
----
-
-## Frontend
-
-### Instalar dependencias
+### Frontend
 
 ```bash
 cd frontend
 npm install
-```
-
-### Configurar variables de entorno
-
-Crear archivo `.env`:
-
-```env
-VITE_API_URL=http://localhost:3000/api
-```
-
-### Ejecutar aplicación
-
-```bash
+cp .env.example .env
 npm run dev
 ```
 
-Frontend disponible en:
+Frontend disponible en `http://localhost:5173`.
 
-```text
-http://localhost:5173
-```
+## Usuario administrador inicial
+
+| Campo | Valor por defecto |
+|---|---|
+| Email | `admin@test.com` |
+| Contraseña | `admin123` |
+| Rol | `master` |
+
+Se pueden cambiar con las variables `ADMIN_EMAIL` y `ADMIN_PASSWORD` antes del primer inicio.
 
 ---
 
@@ -157,7 +128,7 @@ frontend/
 docs/
 ├── sprint1.md
 ├── sprint2.md
-└── tests-integracion-frontend.md
+└── tests-integracion-frontend-backend.md
 ```
 
 ---

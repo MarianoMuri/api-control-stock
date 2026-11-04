@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: control_stock
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Definí POSTGRES_PASSWORD en .env (ver .env.example)}
     ports:
       - "5433:5432"
     volumes:
@@ -23,8 +23,10 @@ services:
       DB_PORT: 5432
       DB_NAME: control_stock
       DB_USER: postgres
-      DB_PASSWORD: postgres
-      JWT_SECRET: clave_secreta_desarrollo
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:?Definí JWT_SECRET en .env (ver .env.example)}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@test.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
       PORT: 3000
     depends_on:
       - postgres

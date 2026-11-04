@@ -24,7 +24,7 @@ Usuario administrador:
 
 ```text
 Email: admin@test.com
-Contraseña: 123456
+Contraseña: admin123
 Rol: master
 ```
 

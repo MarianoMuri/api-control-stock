@@ -120,19 +120,13 @@ CREATE DATABASE control_stock;
 
 ### 4. Configurar variables de entorno
 
-Crear archivo `.env`
+Copiar el archivo de ejemplo y completar los valores:
 
-```env
-PORT=3000
-
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=control_stock
-DB_USER=tu_usuario_postgres
-DB_PASSWORD=tu_password
-
-JWT_SECRET=REMOVED
+```bash
+cp .env.example .env
 ```
+
+`JWT_SECRET` es obligatorio: si falta, el servidor no arranca. Ver `.env.example` para todas las variables.
 
 ### 5. Ejecutar servidor
 
@@ -159,8 +153,10 @@ Al iniciar:
 Usuario administrador inicial:
 
 email: admin@test.com
-password: 123456
+password: admin123
 rol: master
+
+(Configurable con `ADMIN_EMAIL` y `ADMIN_PASSWORD`.)
 
 ## 🗄️ Modelo de Datos
 
@@ -346,7 +342,7 @@ Body:
 ```json
 {
   "email": "admin@test.com",
-  "password": "123456"
+  "password": "admin123"
 }
 ```
 
