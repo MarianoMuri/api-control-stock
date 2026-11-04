@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiFetch } from "../services/api.js";
 
@@ -10,29 +10,29 @@ function Dashboard() {
         usuarios: 0,
     });
 
-    useEffect(() => {
-        cargarDatos();
-    }, []);
-
-    const cargarDatos = async () => {
-        try {
-            const [productos, categorias, movimientos, usuarios] = await Promise.all([
+    const cargarDatos = useCallback(
+        () =>
+            Promise.all([
                 apiFetch("/productos"),
                 apiFetch("/categorias"),
                 apiFetch("/movimientos"),
                 apiFetch("/usuarios"),
-            ]);
+            ])
+                .then(([productos, categorias, movimientos, usuarios]) =>
+                    setTotales({
+                        productos: productos.length,
+                        categorias: categorias.length,
+                        movimientos: movimientos.length,
+                        usuarios: usuarios.length,
+                    })
+                )
+                .catch((error) => console.error(error)),
+        []
+    );
 
-            setTotales({
-                productos: productos.length,
-                categorias: categorias.length,
-                movimientos: movimientos.length,
-                usuarios: usuarios.length,
-            });
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    useEffect(() => {
+        cargarDatos();
+    }, [cargarDatos]);
 
     return (
         <div className="page">

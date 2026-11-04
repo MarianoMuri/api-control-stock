@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import BackToHome from "../components/BackToHome.jsx";
 import { apiFetch } from "../services/api.js";
@@ -13,18 +13,17 @@ function Usuarios() {
     const [error, setError] = useState("");
     const [mensaje, setMensaje] = useState("");
 
+    const cargarUsuarios = useCallback(
+        () =>
+            apiFetch("/usuarios")
+                .then(setUsuarios)
+                .catch((error) => setError(error.message)),
+        []
+    );
+
     useEffect(() => {
         cargarUsuarios();
-    }, []);
-
-    const cargarUsuarios = async () => {
-        try {
-            const data = await apiFetch("/usuarios");
-            setUsuarios(data);
-        } catch (error) {
-            setError(error.message);
-        }
-    };
+    }, [cargarUsuarios]);
 
     const limpiarFormulario = () => {
         setNombre("");

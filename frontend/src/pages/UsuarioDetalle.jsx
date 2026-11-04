@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import BackToHome from "../components/BackToHome.jsx";
 import { apiFetch } from "../services/api.js";
@@ -9,18 +9,17 @@ function UsuarioDetalle() {
     const [usuario, setUsuario] = useState(null);
     const [error, setError] = useState("");
 
+    const cargarUsuario = useCallback(
+        () =>
+            apiFetch(`/usuarios/${id}`)
+                .then(setUsuario)
+                .catch((error) => setError(error.message)),
+        [id]
+    );
+
     useEffect(() => {
         cargarUsuario();
-    }, [id]);
-
-    const cargarUsuario = async () => {
-        try {
-            const data = await apiFetch(`/usuarios/${id}`);
-            setUsuario(data);
-        } catch (error) {
-            setError(error.message);
-        }
-    };
+    }, [cargarUsuario]);
 
     if (error) {
         return (

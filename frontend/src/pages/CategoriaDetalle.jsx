@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import BackToHome from "../components/BackToHome.jsx";
 import { apiFetch } from "../services/api.js";
@@ -9,18 +9,17 @@ function CategoriaDetalle() {
     const [categoria, setCategoria] = useState(null);
     const [error, setError] = useState("");
 
+    const cargarCategoria = useCallback(
+        () =>
+            apiFetch(`/categorias/${id}`)
+                .then(setCategoria)
+                .catch((error) => setError(error.message)),
+        [id]
+    );
+
     useEffect(() => {
         cargarCategoria();
-    }, [id]);
-
-    const cargarCategoria = async () => {
-        try {
-            const data = await apiFetch(`/categorias/${id}`);
-            setCategoria(data);
-        } catch (error) {
-            setError(error.message);
-        }
-    };
+    }, [cargarCategoria]);
 
     if (error) {
         return (

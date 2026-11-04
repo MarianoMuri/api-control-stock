@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import BackToHome from "../components/BackToHome.jsx";
 import { apiFetch } from "../services/api.js";
@@ -12,28 +12,26 @@ function Movimientos() {
     const [error, setError] = useState("");
     const [mensaje, setMensaje] = useState("");
 
+    const cargarMovimientos = useCallback(
+        () =>
+            apiFetch("/movimientos")
+                .then(setMovimientos)
+                .catch((error) => setError(error.message)),
+        []
+    );
+
+    const cargarProductos = useCallback(
+        () =>
+            apiFetch("/productos")
+                .then(setProductos)
+                .catch((error) => setError(error.message)),
+        []
+    );
+
     useEffect(() => {
         cargarMovimientos();
         cargarProductos();
-    }, []);
-
-    const cargarMovimientos = async () => {
-        try {
-            const data = await apiFetch("/movimientos");
-            setMovimientos(data);
-        } catch (error) {
-            setError(error.message);
-        }
-    };
-
-    const cargarProductos = async () => {
-        try {
-            const data = await apiFetch("/productos");
-            setProductos(data);
-        } catch (error) {
-            setError(error.message);
-        }
-    };
+    }, [cargarMovimientos, cargarProductos]);
 
     const limpiarFormulario = () => {
         setTipo("ingreso");

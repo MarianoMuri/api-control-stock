@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import BackToHome from "../components/BackToHome.jsx";
 import { apiFetch } from "../services/api.js";
@@ -9,18 +9,17 @@ function MovimientoDetalle() {
     const [movimiento, setMovimiento] = useState(null);
     const [error, setError] = useState("");
 
+    const cargarMovimiento = useCallback(
+        () =>
+            apiFetch(`/movimientos/${id}`)
+                .then(setMovimiento)
+                .catch((error) => setError(error.message)),
+        [id]
+    );
+
     useEffect(() => {
         cargarMovimiento();
-    }, [id]);
-
-    const cargarMovimiento = async () => {
-        try {
-            const data = await apiFetch(`/movimientos/${id}`);
-            setMovimiento(data);
-        } catch (error) {
-            setError(error.message);
-        }
-    };
+    }, [cargarMovimiento]);
 
     if (error) {
         return (

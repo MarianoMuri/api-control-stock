@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import BackToHome from "../components/BackToHome.jsx";
 import { apiFetch } from "../services/api.js";
@@ -15,28 +15,26 @@ function Productos() {
     const [error, setError] = useState("");
     const [mensaje, setMensaje] = useState("");
 
+    const cargarProductos = useCallback(
+        () =>
+            apiFetch("/productos")
+                .then(setProductos)
+                .catch((error) => setError(error.message)),
+        []
+    );
+
+    const cargarCategorias = useCallback(
+        () =>
+            apiFetch("/categorias")
+                .then(setCategorias)
+                .catch((error) => setError(error.message)),
+        []
+    );
+
     useEffect(() => {
         cargarProductos();
         cargarCategorias();
-    }, []);
-
-    const cargarProductos = async () => {
-        try {
-            const data = await apiFetch("/productos");
-            setProductos(data);
-        } catch (error) {
-            setError(error.message);
-        }
-    };
-
-    const cargarCategorias = async () => {
-        try {
-            const data = await apiFetch("/categorias");
-            setCategorias(data);
-        } catch (error) {
-            setError(error.message);
-        }
-    };
+    }, [cargarProductos, cargarCategorias]);
 
     const limpiarFormulario = () => {
         setNombre("");

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import BackToHome from "../components/BackToHome.jsx";
 import { apiFetch } from "../services/api.js";
@@ -11,18 +11,17 @@ function Categorias() {
     const [error, setError] = useState("");
     const [mensaje, setMensaje] = useState("");
 
+    const cargarCategorias = useCallback(
+        () =>
+            apiFetch("/categorias")
+                .then(setCategorias)
+                .catch((error) => setError(error.message)),
+        []
+    );
+
     useEffect(() => {
         cargarCategorias();
-    }, []);
-
-    const cargarCategorias = async () => {
-        try {
-            const data = await apiFetch("/categorias");
-            setCategorias(data);
-        } catch (error) {
-            setError(error.message);
-        }
-    };
+    }, [cargarCategorias]);
 
     const limpiarFormulario = () => {
         setNombre("");

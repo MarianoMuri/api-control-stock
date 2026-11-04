@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import BackToHome from "../components/BackToHome.jsx";
 import { apiFetch } from "../services/api.js";
@@ -9,18 +9,17 @@ function ProductoDetalle() {
     const [producto, setProducto] = useState(null);
     const [error, setError] = useState("");
 
+    const cargarProducto = useCallback(
+        () =>
+            apiFetch(`/productos/${id}`)
+                .then(setProducto)
+                .catch((error) => setError(error.message)),
+        [id]
+    );
+
     useEffect(() => {
         cargarProducto();
-    }, [id]);
-
-    const cargarProducto = async () => {
-        try {
-            const data = await apiFetch(`/productos/${id}`);
-            setProducto(data);
-        } catch (error) {
-            setError(error.message);
-        }
-    };
+    }, [cargarProducto]);
 
     if (error) {
         return (

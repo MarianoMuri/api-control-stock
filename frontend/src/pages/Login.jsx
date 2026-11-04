@@ -16,7 +16,7 @@ function Login() {
         try {
             await login(email, password);
             navigate("/");
-        } catch (error) {
+        } catch {
             setError("Email o contraseña incorrectos");
         }
     };
