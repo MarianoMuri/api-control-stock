@@ -14,6 +14,20 @@ Aplicación web full stack para gestionar inventario: productos, categorías, mo
 
 Proyecto Final Integrador de la Tecnicatura Universitaria en Programación (UTN).
 
+## Capturas
+
+**Listado de productos** con categoría, precio y stock:
+
+![Listado de productos](docs/screenshots/productos.png)
+
+**Movimientos de stock:** cada ingreso o egreso actualiza el stock del producto y queda registrado con fecha y usuario.
+
+![Movimientos de stock](docs/screenshots/movimientos.png)
+
+**Resumen general** al iniciar sesión:
+
+![Resumen general](docs/screenshots/dashboard.png)
+
 ---
 
 # 1. Tecnologías utilizadas
