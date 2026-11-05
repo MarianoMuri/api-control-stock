@@ -601,3 +601,14 @@ Este repositorio contiene el backend del **Sistema de Inventario y Control de St
 La aplicación fue diseñada para permitir la administración de productos, categorías, usuarios y movimientos de stock mediante una API REST segura, utilizando autenticación basada en JWT y control de acceso por roles.
 
 El proyecto aplica conceptos de desarrollo backend, bases de datos relacionales, seguridad, arquitectura cliente-servidor y buenas prácticas de ingeniería de software, integrando tecnologías modernas del ecosistema JavaScript para construir una solución escalable, mantenible y orientada a entornos reales.
+
+## Tests
+
+Tests de integración con el runner nativo de Node (`node:test`) contra una base PostgreSQL real: autenticación, permisos por rol, movimientos de stock (incluido que egresos simultáneos no dejen el stock inconsistente) y validaciones.
+
+```bash
+# Usar una base vacía: los tests recrean las tablas
+DB_NAME=control_stock_test npm test
+```
+
+Corren automáticamente en el CI con cada push.

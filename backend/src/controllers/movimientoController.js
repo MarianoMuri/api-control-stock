@@ -1,4 +1,5 @@
 import { Op } from 'sequelize';
+import { sequelize } from '../config/database.js';
 import { Movimiento, Producto, Usuario } from '../models/index.js';
 
 export const listarMovimientos = async (req, res) => {
@@ -129,18 +130,6 @@ export const crearMovimiento = async (req, res) => {
       });
     }
 
-    const producto = await Producto.findByPk(Number(id_producto));
-
-    if (!producto) {
-      return res.status(404).json({ mensaje: "Producto no encontrado" });
-    }
-
-    const usuario = await Usuario.findByPk(Number(id_usuario));
-
-    if (!usuario) {
-      return res.status(404).json({ mensaje: "Usuario no encontrado" });
-    }
-
     const cantidadNumerica = Number(cantidad);
 
     if (isNaN(cantidadNumerica) || cantidadNumerica <= 0) {
@@ -149,25 +138,51 @@ export const crearMovimiento = async (req, res) => {
       });
     }
 
-    if (tipo === "egreso" && producto.stock < cantidadNumerica) {
-      return res.status(400).json({ mensaje: "Stock insuficiente" });
+    const usuario = await Usuario.findByPk(Number(id_usuario));
+
+    if (!usuario) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
 
-    const nuevoStock = tipo === "ingreso"
-      ? producto.stock + cantidadNumerica
-      : producto.stock - cantidadNumerica;
+    // Leer y actualizar el stock dentro de una transacción con el producto
+    // bloqueado (SELECT ... FOR UPDATE): dos egresos simultáneos no pueden
+    // validar contra el mismo stock y dejar el inventario inconsistente.
+    const resultado = await sequelize.transaction(async (transaction) => {
+      const producto = await Producto.findByPk(Number(id_producto), {
+        transaction,
+        lock: transaction.LOCK.UPDATE,
+      });
 
-    await producto.update({
-      stock: nuevoStock,
+      if (!producto) {
+        return { status: 404, mensaje: "Producto no encontrado" };
+      }
+
+      if (tipo === "egreso" && producto.stock < cantidadNumerica) {
+        return { status: 400, mensaje: "Stock insuficiente" };
+      }
+
+      const nuevoStock = tipo === "ingreso"
+        ? producto.stock + cantidadNumerica
+        : producto.stock - cantidadNumerica;
+
+      await producto.update({ stock: nuevoStock }, { transaction });
+
+      const movimiento = await Movimiento.create({
+        tipo,
+        cantidad: cantidadNumerica,
+        id_producto: Number(id_producto),
+        id_usuario,
+        fecha: fecha || new Date(),
+      }, { transaction });
+
+      return { movimiento };
     });
 
-    const nuevoMovimiento = await Movimiento.create({
-      tipo,
-      cantidad: cantidadNumerica,
-      id_producto: Number(id_producto),
-      id_usuario,
-      fecha: fecha || new Date(),
-    });
+    if (!resultado.movimiento) {
+      return res.status(resultado.status).json({ mensaje: resultado.mensaje });
+    }
+
+    const nuevoMovimiento = resultado.movimiento;
 
     res.status(201).json(nuevoMovimiento);
   } catch (error) {

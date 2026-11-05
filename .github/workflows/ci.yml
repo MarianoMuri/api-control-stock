@@ -27,7 +27,7 @@ jobs:
           VITE_API_URL: http://localhost:3000/api
 
   backend:
-    name: Backend (smoke test con PostgreSQL)
+    name: Backend (tests de integración + smoke test con PostgreSQL)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -64,6 +64,9 @@ jobs:
           cache: npm
           cache-dependency-path: backend/package-lock.json
       - run: npm ci
+
+      - name: Tests de integración
+        run: npm test
 
       - name: Iniciar API
         run: |
